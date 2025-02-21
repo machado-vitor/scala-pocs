@@ -1,4 +1,9 @@
-@main private def P02() = {
+package p02FindTheLastButOneElement
+
+import scala.annotation.tailrec
+
+@main 
+private def main() = {
   penultimateBuiltin(List(1, 1, 2, 3, 5, 8))
   penultimateRecursive(List(1, 1, 2, 3, 5, 8))
   penultimateBuiltin(List(1, 2, 26, 3, 45, 7))
@@ -7,6 +12,7 @@
   penultimateRecursive(List(1, 12, 42, 3, 1, 9))
 }
 
+@tailrec
 private def penultimateRecursive[A](list: List[A]): A = list match {
   case h :: _ :: Nil => h      // If the list has exactly two elements, return the first one (penultimate)
   case _ :: tail     => penultimateRecursive(tail)  // Otherwise, recurse on the tail
