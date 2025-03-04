@@ -14,22 +14,31 @@ class UserService(userDao: UserDao, addressDao: AddressDao)(implicit ec: Executi
     userDao.db.run(combined.transactionally).map(_ => ())
   }
 
-  def createUserWithAddress(
+  def createOrUpdateUserWithAddress(
     userName: String,
     status: UserStatus,
     city: String,
     country: String
-  ): Future[(Int, Int)] = {
+  ): Future[Int] = {
 
-    val txn = for {
-      addrId <- addressDao.addresses returning addressDao.addresses.map(_.id) +=
-        Address(0, city, country)
-      // Insert user referencing that new address
+    val existingCityQuery = addressDao.addresses.filter(_.city === city).result.headOption
+
+    val combinedAction = for {
+      existingAddrOpt <- existingCityQuery
+      addrId <- existingAddrOpt match {
+        // If the address already exists, use it
+        case Some(addr) => DBIO.successful(addr.id)
+        // Otherwise insert a new address
+        case None => addressDao.addresses returning addressDao.addresses.map(_.id) +=
+          Address(0, city, country)
+      }
+
       userId <- userDao.users returning userDao.users.map(_.id) +=
         User(0, userName, status, addrId)
-    } yield (addrId, userId)
+    } yield userId
 
-    userDao.db.run(txn.transactionally)
+    // Wrap everything in a single transaction
+    userDao.db.run(combinedAction.transactionally)
   }
 
   def listUsersWithAddresses(): Future[Seq[UserWithAddress]] =
@@ -37,4 +46,8 @@ class UserService(userDao: UserDao, addressDao: AddressDao)(implicit ec: Executi
 
   def updateUserStatus(userId: Int, newStatus: UserStatus): Future[Int] =
     userDao.updateStatus(userId, newStatus)
+    
+  def wipeAllUSerData(): Unit = {
+    userDao.wipeAllDbData()
+  }
 }

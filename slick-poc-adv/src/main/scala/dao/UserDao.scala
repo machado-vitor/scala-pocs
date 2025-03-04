@@ -4,6 +4,7 @@ import model.{Address, User, UserStatus, UserWithAddress}
 import schema.SchemaDefinition
 import slick.basic.DatabasePublisher
 import slick.jdbc.PostgresProfile.api.*
+import slick.jdbc.{ResultSetConcurrency, ResultSetType}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,9 +37,16 @@ class UserDao(val db: Database)(implicit ec: ExecutionContext) extends SchemaDef
     }
   }
 
+  def wipeAllDbData(): Future[Int] = {
+    val action = (users.delete andThen addresses.delete)
+    db.run(action)
+  }
+
+  def findAll(): Future[Seq[User]] =
+    db.run(users.result)
+
   /** Streaming example: large 'users' table. */
   def streamAllUsers(): DatabasePublisher[User] = {
-    val action = users.result.withStatementParameters(fetchSize = 50)
-    db.stream(action)
+    db.stream(users.result)
   }
 }
