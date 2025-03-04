@@ -1,52 +1,42 @@
 package dao
 
 import model.{Address, User, UserStatus, UserWithAddress}
-import schema.SchemaDefinition
-import slick.basic.DatabasePublisher
 import slick.jdbc.PostgresProfile.api.*
-import slick.jdbc.{ResultSetConcurrency, ResultSetType}
+import demo.Tables.{Addresses, AddressesRow, Users, UsersRow}
+import slick.basic.DatabasePublisher
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+/** DAO for 'users' -- only returns DBIO actions. */
+class UserDao {
 
-/** DAO for users table */
-class UserDao(val db: Database)(implicit ec: ExecutionContext) extends SchemaDefinition {
-  
-  def insertUser(user: User): Future[Int] = {
-    // returns auto-generated user id
-    db.run(users returning users.map(_.id) += user)
-  }
+  /** DBIO: create the 'users' table (if not exists). */
+  def createSchema: DBIO[Unit] =
+    Users.schema.createIfNotExists
 
-  def findById(userId: Int): Future[Option[User]] =
-    db.run(users.filter(_.id === userId).result.headOption)
+  /** DBIO: insert user, returning new ID. */
+  def insertUser(user: User): DBIO[Int] =
+    (Users returning Users.map(_.id)) += UsersRow(user.id, user.name, user.userStatus.toString, user.addressId)
 
-  def updateStatus(userId: Int, newStatus: UserStatus): Future[Int] = {
-    val action = users.filter(_.id === userId).map(_.status).update(newStatus)
-    db.run(action)
-  }
+  /** DBIO: update user status. */
+  def updateStatus(userId: Int, newStatus: UserStatus): DBIO[Int] =
+    Users.filter(_.id === userId).map(_.status).update(newStatus.toString)
 
-  def fetchAllJoined(): Future[Seq[UserWithAddress]] = {
+  /** DBIO: join user+address to produce (UserWithAddress). */
+  def fetchAllJoined(): DBIO[Seq[UserWithAddress]] = {
     val joinQuery = for {
-      (u, a) <- users join addresses on (_.addressId === _.id)
-    } yield (u.id, u.name, u.status, a.id, a.city, a.country)
+      (u, a) <- Users join Addresses on (_.addressId === _.id)
+    } yield (u, a)
 
-    db.run(joinQuery.result).map { rows =>
-      rows.map {
-        case (uId, nm, st, addrId, city, country) =>
-          UserWithAddress(uId, nm, st, Address(addrId, city, country))
+    joinQuery.result.map { rows =>
+      rows.map { case (userRow, addressesRow) =>
+        val user = User(userRow.id, userRow.name, UserStatus.fromString(userRow.status), userRow.addressId)
+        val addr = Address(addressesRow.id, addressesRow.city, addressesRow.country)
+        UserWithAddress(user.id, user.name, user.userStatus, addr)
       }
     }
   }
 
-  def wipeAllDbData(): Future[Int] = {
-    val action = (users.delete andThen addresses.delete)
-    db.run(action)
-  }
-
-  def findAll(): Future[Seq[User]] =
-    db.run(users.result)
-
-  /** Streaming example: large 'users' table. */
-  def streamAllUsers(): DatabasePublisher[User] = {
-    db.stream(users.result)
-  }
+  /** DBIO: wipe data from 'users' table. */
+  def deleteAllUsers(): DBIO[Int] =
+    Users.delete
 }

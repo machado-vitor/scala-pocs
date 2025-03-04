@@ -3,17 +3,29 @@ package service
 import dao.{AddressDao, UserDao}
 import model.{Address, User, UserStatus, UserWithAddress}
 import slick.jdbc.PostgresProfile.api.*
+import slick.basic.DatabasePublisher
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/** Example service orchestrating user & address logic. */
-class UserService(userDao: UserDao, addressDao: AddressDao)(implicit ec: ExecutionContext) {
+class UserService(db: Database)(implicit ec: ExecutionContext) {
 
+  // Create the DAOs internally, no need for them in Main
+  private val addressDao = new AddressDao()
+  private val userDao    = new UserDao()
+
+  /** Create both schemas in one go (if needed). */
   def createSchemaAll(): Future[Unit] = {
-    val combined = (userDao.users.schema ++ addressDao.addresses.schema).createIfNotExists
-    userDao.db.run(combined.transactionally).map(_ => ())
+    val action = for {
+      _ <- addressDao.createSchema
+      _ <- userDao.createSchema
+    } yield ()
+    db.run(action.transactionally).map(_ => ())
   }
 
+  /**
+   * Example: Create or update an Address by city, then insert a User referencing that address.
+   * Returns the newly inserted user ID.
+   */
   def createOrUpdateUserWithAddress(
     userName: String,
     status: UserStatus,
@@ -21,33 +33,36 @@ class UserService(userDao: UserDao, addressDao: AddressDao)(implicit ec: Executi
     country: String
   ): Future[Int] = {
 
-    val existingCityQuery = addressDao.addresses.filter(_.city === city).result.headOption
-
-    val combinedAction = for {
-      existingAddrOpt <- existingCityQuery
+    val txn = for {
+      existingAddrOpt <- addressDao.findByCity(city)
       addrId <- existingAddrOpt match {
-        // If the address already exists, use it
-        case Some(addr) => DBIO.successful(addr.id)
-        // Otherwise insert a new address
-        case None => addressDao.addresses returning addressDao.addresses.map(_.id) +=
-          Address(0, city, country)
+        case Some(addrRow) => DBIO.successful(addrRow.id)
+        case None          => addressDao.insertAddress(Address(0, city, country))
       }
-
-      userId <- userDao.users returning userDao.users.map(_.id) +=
-        User(0, userName, status, addrId)
+      userId <- userDao.insertUser(User(0, userName, status, addrId))
     } yield userId
 
-    // Wrap everything in a single transaction
-    userDao.db.run(combinedAction.transactionally)
+    db.run(txn.transactionally)
   }
 
-  def listUsersWithAddresses(): Future[Seq[UserWithAddress]] =
-    userDao.fetchAllJoined()
+  /** Fetch all users joined with addresses (DBIO-based), run here. */
+  def fetchAllJoined(): Future[Seq[UserWithAddress]] =
+    db.run(userDao.fetchAllJoined())
 
-  def updateUserStatus(userId: Int, newStatus: UserStatus): Future[Int] =
-    userDao.updateStatus(userId, newStatus)
-    
-  def wipeAllUSerData(): Unit = {
-    userDao.wipeAllDbData()
+  /** Wipe all data from both tables in one transaction. */
+  def wipeAllUserData(): Future[Int] = {
+    val txn = for {
+      deletedUsers     <- userDao.deleteAllUsers()
+      deletedAddresses <- addressDao.deleteAllAddresses()
+    } yield deletedUsers + deletedAddresses
+    db.run(txn.transactionally)
   }
+
+  /** Insert an Address, returning the new ID. */
+  def insertAddress(addr: Address): Future[Int] =
+    db.run(addressDao.insertAddress(addr))
+
+  /** Insert a User, returning the new ID. */
+  def insertUser(user: User): Future[Int] =
+    db.run(userDao.insertUser(user))
 }
