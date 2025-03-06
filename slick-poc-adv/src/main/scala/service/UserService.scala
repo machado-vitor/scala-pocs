@@ -1,7 +1,8 @@
 package service
 
 import dao.{AddressDao, UserDao}
-import model.{Address, User, UserStatus, UserWithAddress}
+import demo.Tables.{AddressesRow, UsersRow}
+import model.{UserStatus, UserWithAddress}
 import slick.jdbc.PostgresProfile.api.*
 import slick.basic.DatabasePublisher
 
@@ -28,7 +29,7 @@ class UserService(db: Database)(implicit ec: ExecutionContext) {
    */
   def createOrUpdateUserWithAddress(
     userName: String,
-    status: UserStatus,
+    status: String,
     city: String,
     country: String
   ): Future[Int] = {
@@ -37,9 +38,9 @@ class UserService(db: Database)(implicit ec: ExecutionContext) {
       existingAddrOpt <- addressDao.findByCity(city)
       addrId <- existingAddrOpt match {
         case Some(addrRow) => DBIO.successful(addrRow.id)
-        case None          => addressDao.insertAddress(Address(0, city, country))
+        case None          => addressDao.insertAddress(AddressesRow(0, city, country))
       }
-      userId <- userDao.insertUser(User(0, userName, status, addrId))
+      userId <- userDao.insertUser(UsersRow(0, userName, status, addrId))
     } yield userId
 
     db.run(txn.transactionally)
@@ -59,10 +60,10 @@ class UserService(db: Database)(implicit ec: ExecutionContext) {
   }
 
   /** Insert an Address, returning the new ID. */
-  def insertAddress(addr: Address): Future[Int] =
+  def insertAddress(addr: AddressesRow): Future[Int] =
     db.run(addressDao.insertAddress(addr))
 
   /** Insert a User, returning the new ID. */
-  def insertUser(user: User): Future[Int] =
+  def insertUser(user: UsersRow): Future[Int] =
     db.run(userDao.insertUser(user))
 }

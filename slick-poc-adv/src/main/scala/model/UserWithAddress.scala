@@ -1,8 +1,10 @@
 package model
 
+import demo.Tables.AddressesRow
+
 case class UserWithAddress(
   id: Int,
   name: String,
   status: UserStatus,
-  address: Address
+  addresses: AddressesRow
 )

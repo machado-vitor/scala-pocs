@@ -55,6 +55,7 @@ slick := {
   ).failed.foreach(err => sys.error(s"Slick codegen failed: ${err.getMessage}"))
 
   val file = outputDir / pkg / "Tables.scala"
+  
   log.info(s"Slick codegen complete. Generated file: $file")
 
   Seq(file)

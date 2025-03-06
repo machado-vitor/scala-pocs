@@ -1,6 +1,6 @@
 package dao
 
-import model.{Address, User, UserStatus, UserWithAddress}
+import model.{UserStatus, UserWithAddress}
 import slick.jdbc.PostgresProfile.api.*
 import demo.Tables.{Addresses, AddressesRow, Users, UsersRow}
 import slick.basic.DatabasePublisher
@@ -14,8 +14,8 @@ class UserDao {
     Users.schema.createIfNotExists
 
   /** DBIO: insert user, returning new ID. */
-  def insertUser(user: User): DBIO[Int] =
-    (Users returning Users.map(_.id)) += UsersRow(user.id, user.name, user.userStatus.toString, user.addressId)
+  def insertUser(user: UsersRow): DBIO[Int] =
+    (Users returning Users.map(_.id)) += UsersRow(user.id, user.name, user.status, user.addressId)
 
   /** DBIO: update user status. */
   def updateStatus(userId: Int, newStatus: UserStatus): DBIO[Int] =
@@ -29,9 +29,9 @@ class UserDao {
 
     joinQuery.result.map { rows =>
       rows.map { case (userRow, addressesRow) =>
-        val user = User(userRow.id, userRow.name, UserStatus.fromString(userRow.status), userRow.addressId)
-        val addr = Address(addressesRow.id, addressesRow.city, addressesRow.country)
-        UserWithAddress(user.id, user.name, user.userStatus, addr)
+        val user = UsersRow(userRow.id, userRow.name, userRow.status, userRow.addressId)
+        val addr = AddressesRow(addressesRow.id, addressesRow.city, addressesRow.country)
+        UserWithAddress(user.id, user.name, UserStatus.fromString(user.status), addr)
       }
     }
   }
