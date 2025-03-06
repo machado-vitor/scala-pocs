@@ -12,7 +12,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserDao(val db: Database)(implicit ec: ExecutionContext) extends SchemaDefinition {
   
   def insertUser(user: User): Future[Int] = {
-    // returns auto-generated user id
+    // returns auto-generated user id -- returning users.map(_.id))
     db.run(users returning users.map(_.id) += user)
   }
 
@@ -26,13 +26,13 @@ class UserDao(val db: Database)(implicit ec: ExecutionContext) extends SchemaDef
 
   def fetchAllJoined(): Future[Seq[UserWithAddress]] = {
     val joinQuery = for {
-      (u, a) <- users join addresses on (_.addressId === _.id)
+      (u, a) <- users join addresses on (_.addressId === _.id) // Joining users and addresses
     } yield (u.id, u.name, u.status, a.id, a.city, a.country)
 
     db.run(joinQuery.result).map { rows =>
       rows.map {
         case (uId, nm, st, addrId, city, country) =>
-          UserWithAddress(uId, nm, st, Address(addrId, city, country))
+          UserWithAddress(uId, nm, st, Address(addrId, city, country)) // Mapping result to case classes
       }
     }
   }
@@ -48,5 +48,6 @@ class UserDao(val db: Database)(implicit ec: ExecutionContext) extends SchemaDef
   /** Streaming example: large 'users' table. */
   def streamAllUsers(): DatabasePublisher[User] = {
     db.stream(users.result)
+    // Instead of fetching all users at once, this method streams them lazily.
   }
 }

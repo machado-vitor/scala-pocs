@@ -29,7 +29,7 @@ class UserService(userDao: UserDao, addressDao: AddressDao)(implicit ec: Executi
         // If the address already exists, use it
         case Some(addr) => DBIO.successful(addr.id)
         // Otherwise insert a new address
-        case None => addressDao.addresses returning addressDao.addresses.map(_.id) +=
+        case None => addressDao.addresses returning addressDao.addresses.map(_.id) += // returns auto-generated address id
           Address(0, city, country)
       }
 

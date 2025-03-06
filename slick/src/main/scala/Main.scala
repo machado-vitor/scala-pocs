@@ -13,8 +13,8 @@ object Main extends App {
     def * = (id, name, email)
   }
 
-  val db = Database.forConfig("slick.db")
-  val users = TableQuery[UsersTable]
+  val db = Database.forConfig("slick.db") // uses src/main/resources/application.conf
+  val users = TableQuery[UsersTable] // creates a query interface for the users table
 
   def runBlocking[T](action: DBIO[T]): T =
     Await.result(db.run(action), 10.seconds)
@@ -24,8 +24,8 @@ object Main extends App {
   println("Schema created.\n")
 
   println("Inserting sample users...")
-  val insertAction = DBIO.seq(
-    users += (0, "Alice", "alice@example.com"),
+  val insertAction = DBIO.seq( // DBIO.seq takes a variable number of DBIO actions and combines them into a single DBIO action
+    users += (0, "Alice", "alice@example.com"), // += operator is used to insert a row into the table
     users += (0, "Bob", "bob@example.com"),
     users += (0, "Charlie", "charlie@example.com")
   )
@@ -39,9 +39,9 @@ object Main extends App {
 
   println("Updating Charlie's email...")
   val rowsUpdated = runBlocking {
-    users.filter(_.name === "Charlie")
+    users.filter(_.name === "Charlie") // filter the users table to find the row with name "Charlie"
       .map(_.email)
-      .update("charlie.new@example.com")
+      .update("charlie.new@example.com") // update the email field of the row
   }
   println(s"Rows updated: $rowsUpdated\n")
 
@@ -51,7 +51,7 @@ object Main extends App {
 
   println("Deleting Bob...")
   val rowsDeleted = runBlocking {
-    users.filter(_.name === "Bob").delete
+    users.filter(_.name === "Bob").delete // delete the row with name "Bob"
   }
   println(s"Rows deleted: $rowsDeleted\n")
 

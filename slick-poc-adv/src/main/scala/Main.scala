@@ -32,17 +32,10 @@ object Main extends App {
   logger.info("Schema created.")
 
   val addrId1 = Await.result(addressDao.insertAddress(Address(0, "New York", "USA")), 10.seconds)
-  logger.info(s"Inserted Address ID: $addrId1")
   val addrId2 = Await.result(addressDao.insertAddress(Address(0, "London", "UK")), 10.seconds)
-  logger.info(s"Inserted Address ID: $addrId2")
   val user1 = Await.result(userDao.insertUser(User(0, "Alice", UserStatus.Active, addrId1)), 10.seconds)
-  logger.info(s"Inserted User ID: $user1")
-
   val user2 = Await.result(userDao.insertUser(User(0, "Bob", UserStatus.Inactive, addrId2)), 10.seconds)
-  logger.info(s"Inserted User ID: $user2")
-
   val user3 = Await.result(userDao.insertUser(User(0, "Charlie", UserStatus.Banned, addrId1)), 10.seconds)
-  logger.info(s"Inserted User ID: $user3")
 
   // Fetch users
   val users = Await.result(userDao.fetchAllJoined(), 10.seconds)
@@ -50,7 +43,9 @@ object Main extends App {
   users.foreach(user => logger.info(user.toString))
 
   val publisher: DatabasePublisher[User] = userDao.streamAllUsers()
-  val latch = new CountDownLatch(1)
+  publisher.subscribe(subscriber) // Subscribes a reactive stream subscriber to process streamed users.
+  val latch = new CountDownLatch(1) // block the main thread until streaming is complete.
+  latch.await()
 
   val subscriber = new Subscriber[User] {
     private var sub: Subscription = uninitialized
@@ -75,10 +70,6 @@ object Main extends App {
       latch.countDown()
     }
   }
-
-  // 4. Subscribe and wait until stream finishes
-  publisher.subscribe(subscriber)
-  latch.await()
 
 //  userService.wipeAllUSerData() // wipe data
 
