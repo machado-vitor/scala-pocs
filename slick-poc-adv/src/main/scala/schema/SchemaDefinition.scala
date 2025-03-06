@@ -21,7 +21,8 @@ trait SchemaDefinition {
 
     // Map columns to the Address case class
     def * : ProvenShape[Address] =
-      (id, city, country) <> (Address.apply.tupled, Address.unapply)
+      (id, city, country) <> // (Shape mapping operator) maps between the tuple format and case class.
+        (Address.apply.tupled, Address.unapply)
   }
 
   val addresses = TableQuery[AddressesTable]

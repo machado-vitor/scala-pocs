@@ -43,9 +43,6 @@ object Main extends App {
   users.foreach(user => logger.info(user.toString))
 
   val publisher: DatabasePublisher[User] = userDao.streamAllUsers()
-  publisher.subscribe(subscriber) // Subscribes a reactive stream subscriber to process streamed users.
-  val latch = new CountDownLatch(1) // block the main thread until streaming is complete.
-  latch.await()
 
   val subscriber = new Subscriber[User] {
     private var sub: Subscription = uninitialized
@@ -70,6 +67,10 @@ object Main extends App {
       latch.countDown()
     }
   }
+
+  publisher.subscribe(subscriber) // Subscribes a reactive stream subscriber to process streamed users.
+  val latch = new CountDownLatch(1) // block the main thread until streaming is complete.
+  latch.await()
 
 //  userService.wipeAllUSerData() // wipe data
 
