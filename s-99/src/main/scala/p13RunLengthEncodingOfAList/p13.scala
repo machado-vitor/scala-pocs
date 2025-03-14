@@ -14,6 +14,6 @@ def main(): Unit = {
 def encodeDirect[A](ls: List[A]): List[(Int, A)] =
   if (ls.isEmpty) Nil
   else {
-    val (packed, next) = ls span { _ == ls.head }
-    (packed.length, packed.head) :: encodeDirect(next)
+    val (packed, next) = ls.span { _ == ls.head } // span splits the list in two parts
+    (packed.length, packed.head) :: encodeDirect(next) // concatenate with the next part
   }
