@@ -1,5 +1,8 @@
 package arithmetic.p31DetermineWhetherAGivenIntegerNumberIsPrime
 
+import arithmetic.p31DetermineWhetherAGivenIntegerNumberIsPrime.S99Int.primes
+import arithmetic.p31DetermineWhetherAGivenIntegerNumberIsPrime.S99Int.intToS99Int
+
 import scala.language.implicitConversions
 
 class S99Int(val start: Int) {
