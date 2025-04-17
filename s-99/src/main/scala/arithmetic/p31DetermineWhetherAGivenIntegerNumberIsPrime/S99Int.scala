@@ -16,6 +16,17 @@ class S99Int(val start: Int) {
 
   //P34
   def totient: Int = (1 to start).count(start.isCoprimeTo(_))
+  
+  //P35
+  def primeFactors: List[Int] =
+    def primeFactorsR(n: Int, divisor: Int, acc: List[Int]): List[Int] =
+      if n == 1 then acc.reverse
+      else if n % divisor == 0 then primeFactorsR(n / divisor, divisor, divisor :: acc)
+      else primeFactorsR(n, nextDivisor(divisor), acc)
+
+    primeFactorsR(start, 2, Nil)
+
+  private def nextDivisor(d: Int): Int = if (d == 2) 3 else d + 2
 }
 
 object S99Int {
@@ -35,4 +46,5 @@ def main(): Unit = {
   println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
   println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
   println(s"Totient of 10: ${10.totient}")
+  println(s"Prime factors of 315: ${315.primeFactors}")
 }
