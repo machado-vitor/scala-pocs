@@ -18,15 +18,20 @@ class S99Int(val start: Int) {
   def totient: Int = (1 to start).count(start.isCoprimeTo(_))
   
   //P35
-  def primeFactors: List[Int] =
+  def primeFactors: List[Int] = // Define method to return prime factors of `start` as a List[Int]
+
+    @tailrec // Tail-recursive annotation for optimization
     def primeFactorsR(n: Int, divisor: Int, acc: List[Int]): List[Int] =
-      if n == 1 then acc.reverse
-      else if n % divisor == 0 then primeFactorsR(n / divisor, divisor, divisor :: acc)
-      else primeFactorsR(n, nextDivisor(divisor), acc)
+      if n == 1 then acc.reverse // Base case: if n is 1, return accumulated factors (in correct order)
+      else if n % divisor == 0 then // If current divisor divides n evenly
+        primeFactorsR(n / divisor, divisor, divisor :: acc) // Add divisor to list and recurse with reduced n
+      else
+        primeFactorsR(n, nextDivisor(divisor), acc) // Otherwise, try the next possible divisor
+    primeFactorsR(start, 2, Nil) // Kick off recursion with `start`, starting from divisor 2 and empty accumulator
 
-    primeFactorsR(start, 2, Nil)
+  private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
+    if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
 
-  private def nextDivisor(d: Int): Int = if (d == 2) 3 else d + 2
 }
 
 object S99Int {
