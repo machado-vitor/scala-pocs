@@ -29,9 +29,15 @@ class S99Int(val start: Int) {
         primeFactorsR(n, nextDivisor(divisor), acc) // Otherwise, try the next possible divisor
     primeFactorsR(start, 2, Nil) // Kick off recursion with `start`, starting from divisor 2 and empty accumulator
 
+  // P36: Return prime factors with their multiplicities as a List of tuples
+  def primeFactorMultiplicity: List[(Int, Int)] =
+    primeFactors.groupBy(identity).map { case (p, list) => (p, list.length) }.toList.sortBy(_._1)
+
+  def primeFactorMultiplicityMap: Map[Int, Int] =
+    primeFactors.groupBy(identity).view.mapValues(_.size).toMap
+
   private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
     if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
-
 }
 
 object S99Int {
@@ -52,4 +58,6 @@ def main(): Unit = {
   println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
   println(s"Totient of 10: ${10.totient}")
   println(s"Prime factors of 315: ${315.primeFactors}")
+  println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
+  println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
 }
