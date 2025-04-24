@@ -36,6 +36,15 @@ class S99Int(val start: Int) {
   def primeFactorMultiplicityMap: Map[Int, Int] =
     primeFactors.groupBy(identity).view.mapValues(_.size).toMap
 
+  // P37:
+  def totientImproved: Int = {
+    primeFactorMultiplicity
+      .map { 
+        case (p, m) => (p - 1) * BigInt(p).pow(m - 1).toInt
+      }.product
+  }
+
+
   private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
     if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
 }
@@ -60,4 +69,5 @@ def main(): Unit = {
   println(s"Prime factors of 315: ${315.primeFactors}")
   println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
   println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
+  println(s"Totient improved of 36: ${36.totientImproved}")
 }
