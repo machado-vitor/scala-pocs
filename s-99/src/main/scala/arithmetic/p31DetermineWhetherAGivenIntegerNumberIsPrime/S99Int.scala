@@ -39,10 +39,32 @@ class S99Int(val start: Int) {
   // P37:
   def totientImproved: Int = {
     primeFactorMultiplicity
-      .map { 
+      .map {
         case (p, m) => (p - 1) * BigInt(p).pow(m - 1).toInt
       }.product
   }
+  
+  // // P38:
+  //  // Compare the two methods of calculating Euler's totient function
+    def totientComparison = {
+      val startTime1 = System.currentTimeMillis()
+      val result1 = start.totient
+      val endTime1 = System.currentTimeMillis()
+      
+      val startTime2 = System.currentTimeMillis()
+      val result2 = start.totientImproved
+      val endTime2 = System.currentTimeMillis()
+      
+      val time1 = endTime1 - startTime1
+      val time2 = endTime2 - startTime2
+      println(s"Totient of 10090:")
+      println(s"  Method 1 (naive): $result1 (took $time1 ms)")
+      println(s"  Method 2 (improved): $result2 (took $time2 ms)")
+      println(s"  The improved method was ${time1.toDouble / time2} times faster")
+    }
+
+  // P38:
+  // Compare the two methods of calculating Euler’s totient function
 
 
   private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
@@ -70,4 +92,5 @@ def main(): Unit = {
   println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
   println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
   println(s"Totient improved of 36: ${36.totientImproved}")
+  10090.totientComparison
 }
