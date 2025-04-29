@@ -62,9 +62,17 @@ class S99Int(val start: Int) {
       println(s"  Method 2 (improved): $result2 (took $time2 ms)")
       println(s"  The improved method was ${time1.toDouble / time2} times faster")
     }
+  // P39: A list of private number
 
-  // P38:
-  // Compare the two methods of calculating Euler’s totient function
+  def listPrimesinRange(r: Range): List[Int] = {
+    @tailrec
+    def primesInRange(n: Int, acc: List[Int]): List[Int] = {
+      if (n > r.end) acc.reverse
+      else if (n.isPrime) primesInRange(n + 1, n :: acc)
+      else primesInRange(n + 1, acc)
+    }
+    primesInRange(r.start, Nil)
+  }
 
 
   private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
@@ -93,4 +101,5 @@ def main(): Unit = {
   println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
   println(s"Totient improved of 36: ${36.totientImproved}")
   10090.totientComparison
+  println(s"List of primes in range 10 to 50: ${10.listPrimesinRange(10 to 50)}")
 }
