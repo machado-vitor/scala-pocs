@@ -74,6 +74,18 @@ class S99Int(val start: Int) {
     primesInRange(r.start, Nil)
   }
 
+  // P40 Goldbach’s conjecture says that every positive even number greater than 2 is the sum of two prime numbers.
+  // E.g. 28 = 5 + 23 It is one of the most famous facts in number theory that has not been proved to be correct in the general case.
+  // It has been numerically confirmed up to very large numbers (much larger than Scala’s Int can represent).
+  // Write a function to find the two prime numbers that sum up to a given even integer.
+
+  def goldbach: (Int, Int) = {
+    primes.takeWhile(_ < start).find(p => (start - p).isPrime) match
+      case Some(p) => (p, start - p)
+      case None     => throw new IllegalArgumentException
+  }
+
+
 
   private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
     if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
@@ -102,4 +114,5 @@ def main(): Unit = {
   println(s"Totient improved of 36: ${36.totientImproved}")
   10090.totientComparison
   println(s"List of primes in range 10 to 50: ${10.listPrimesinRange(10 to 50)}")
+  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
 }
