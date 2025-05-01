@@ -6,10 +6,17 @@ import scala.language.implicitConversions
 class S99Int(val start: Int) {
   import S99Int._
   //P31
-  def isPrime: Boolean =
+  // while this is not using an explicit recursion,
+  // this implementation have a form of implicit recursion.
+  // The primes are generated lazily, so the list is not fully computed until needed.
+  def isPrime: Boolean = {
     (start > 1) && primes.takeWhile {
-      _ <= Math.sqrt(start)
-    }.forall{ start % _ != 0 }
+      _ <= Math.sqrt(start) // we only check the primes up to the square root of `start`
+    // if checking if 30 is prime, we only check 2, 3, 5, because root of 30 is 5.477
+    }.forall{ start % _ != 0 } // check that none of the primes divides start evenly.
+    //
+
+  }
 
   //P33
   def isCoprimeTo(n: Int): Boolean = gcd(start, n) == 1
@@ -92,7 +99,7 @@ class S99Int(val start: Int) {
 }
 
 object S99Int {
-  val primes: Seq[Int] = LazyList.cons(2, LazyList.from(3, 2) filter { _.isPrime })
+  val primes: Seq[Int] = LazyList.cons(2, LazyList.from(3, 2) filter { _.isPrime }) // which is the value of primes
 
   @tailrec
   def gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m % n)
@@ -104,15 +111,15 @@ object S99Int {
 @main
 def main(): Unit = {
   import S99Int._
-  println(s"7 is prime: ${7.isPrime}")
-  println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
-  println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
-  println(s"Totient of 10: ${10.totient}")
-  println(s"Prime factors of 315: ${315.primeFactors}")
-  println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
-  println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
-  println(s"Totient improved of 36: ${36.totientImproved}")
-  10090.totientComparison
-  println(s"List of primes in range 10 to 50: ${10.listPrimesinRange(10 to 50)}")
-  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
+  println(s"7 is prime: ${30.isPrime}")
+//  println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
+//  println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
+//  println(s"Totient of 10: ${10.totient}")
+//  println(s"Prime factors of 315: ${315.primeFactors}")
+//  println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
+//  println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
+//  println(s"Totient improved of 36: ${36.totientImproved}")
+//  10090.totientComparison
+//  println(s"List of primes in range 10 to 50: ${10.listPrimesinRange(10 to 50)}")
+//  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
 }
