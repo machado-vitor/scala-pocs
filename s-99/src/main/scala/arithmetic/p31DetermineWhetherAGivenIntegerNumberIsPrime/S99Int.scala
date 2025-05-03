@@ -14,7 +14,7 @@ class S99Int(val start: Int) {
       _ <= Math.sqrt(start) // we only check the primes up to the square root of `start`
     // if checking if 30 is prime, we only check 2, 3, 5, because root of 30 is 5.477
     }.forall{ start % _ != 0 } // check that none of the primes divides start evenly.
-    //
+    // if any of the primes divides start evenly, then start is not prime.
 
   }
 
@@ -103,7 +103,10 @@ object S99Int {
 
   @tailrec
   def gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m % n)
-
+  //gcd(48, 18) calls gcd(18, 48 % 18) = gcd(18, 12)
+  //gcd(18, 12) calls gcd(12, 18 % 12) = gcd(12, 6)
+  //gcd(12, 6) calls gcd(6, 12 % 6) = gcd(6, 0)
+  //gcd(6, 0) returns 6 (base case)
 
   implicit def intToS99Int(n: Int): S99Int = new S99Int(n)
 }
@@ -112,8 +115,8 @@ object S99Int {
 def main(): Unit = {
   import S99Int._
   println(s"7 is prime: ${30.isPrime}")
-//  println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
-//  println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
+  println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
+  println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
 //  println(s"Totient of 10: ${10.totient}")
 //  println(s"Prime factors of 315: ${315.primeFactors}")
 //  println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
