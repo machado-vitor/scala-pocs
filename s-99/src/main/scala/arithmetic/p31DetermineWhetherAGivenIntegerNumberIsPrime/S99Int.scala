@@ -19,10 +19,10 @@ class S99Int(val start: Int) {
   }
 
   //P33
-  def isCoprimeTo(n: Int): Boolean = gcd(start, n) == 1
+  def isCoprimeTo(n: Int): Boolean = gcd(start, n) == 1 // Check if the GCD of `start` and `n` is 1
 
   //P34
-  def totient: Int = (1 to start).count(start.isCoprimeTo(_))
+  def totient: Int = (1 to start).count(start.isCoprimeTo(_)) // Count numbers from 1 to `start` that are coprime to `start`
   
   //P35
   def primeFactors: List[Int] = // Define method to return prime factors of `start` as a List[Int]
@@ -91,8 +91,6 @@ class S99Int(val start: Int) {
       case Some(p) => (p, start - p)
       case None     => throw new IllegalArgumentException
   }
-
-
 
   private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
     if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
