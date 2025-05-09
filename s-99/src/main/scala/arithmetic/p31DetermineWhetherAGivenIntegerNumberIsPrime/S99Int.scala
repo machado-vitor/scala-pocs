@@ -96,6 +96,8 @@ class S99Int(val start: Int) {
     if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
 }
 
+// A companion object in Scala is a singleton object that has the same name as a class and is defined in the same file.
+// It provides a way to associate static-like functionality with a class without using static members
 object S99Int {
   val primes: Seq[Int] = LazyList.cons(2, LazyList.from(3, 2) filter { _.isPrime }) // which is the value of primes
 
@@ -106,13 +108,13 @@ object S99Int {
   //gcd(12, 6) calls gcd(6, 12 % 6) = gcd(6, 0)
   //gcd(6, 0) returns 6 (base case)
 
-  implicit def intToS99Int(n: Int): S99Int = new S99Int(n)
+  implicit def intToS99Int(n: Int): S99Int = new S99Int(n) // Implicit conversion from Int to S99Int
 }
 
 @main
 def main(): Unit = {
   import S99Int._
-  println(s"7 is prime: ${30.isPrime}")
+  println(s"7 is prime: ${30.isPrime}") // check how it works
   println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
   println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
 //  println(s"Totient of 10: ${10.totient}")
