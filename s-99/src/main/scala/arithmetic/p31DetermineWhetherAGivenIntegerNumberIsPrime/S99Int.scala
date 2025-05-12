@@ -26,14 +26,13 @@ class S99Int(val start: Int) {
   
   //P35
   def primeFactors: List[Int] = // Define method to return prime factors of `start` as a List[Int]
-
     @tailrec // Tail-recursive annotation for optimization
     def primeFactorsR(n: Int, divisor: Int, acc: List[Int]): List[Int] =
       if n == 1 then acc.reverse // Base case: if n is 1, return accumulated factors (in correct order)
       else if n % divisor == 0 then // If current divisor divides n evenly
         primeFactorsR(n / divisor, divisor, divisor :: acc) // Add divisor to list and recurse with reduced n
       else
-        primeFactorsR(n, nextDivisor(divisor), acc) // Otherwise, try the next possible divisor
+        primeFactorsR(n, if (divisor == 2) 3 else divisor + 2, acc) // Otherwise, try the next possible divisor
     primeFactorsR(start, 2, Nil) // Kick off recursion with `start`, starting from divisor 2 and empty accumulator
 
   // P36: Return prime factors with their multiplicities as a List of tuples
@@ -69,17 +68,6 @@ class S99Int(val start: Int) {
       println(s"  Method 2 (improved): $result2 (took $time2 ms)")
       println(s"  The improved method was ${time1.toDouble / time2} times faster")
     }
-  // P39: A list of private number
-
-  def listPrimesinRange(r: Range): List[Int] = {
-    @tailrec
-    def primesInRange(n: Int, acc: List[Int]): List[Int] = {
-      if (n > r.end) acc.reverse
-      else if (n.isPrime) primesInRange(n + 1, n :: acc)
-      else primesInRange(n + 1, acc)
-    }
-    primesInRange(r.start, Nil)
-  }
 
   // P40 Goldbach’s conjecture says that every positive even number greater than 2 is the sum of two prime numbers.
   // E.g. 28 = 5 + 23 It is one of the most famous facts in number theory that has not been proved to be correct in the general case.
@@ -90,25 +78,33 @@ class S99Int(val start: Int) {
     primes.takeWhile(_ < start).find(p => (start - p).isPrime) match
       case Some(p) => (p, start - p)
       case None     => throw new IllegalArgumentException
-  }
-
-  private def nextDivisor(d: Int): Int = // Helper to get the next potential divisor
-    if (d == 2) 3 else d + 2             // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
+  }   // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
 }
 
 // A companion object in Scala is a singleton object that has the same name as a class and is defined in the same file.
 // It provides a way to associate static-like functionality with a class without using static members
 object S99Int {
-  val primes: Seq[Int] = LazyList.cons(2, LazyList.from(3, 2) filter { _.isPrime }) // which is the value of primes
+  implicit def intToS99Int(n: Int): S99Int = new S99Int(n) // Implicit conversion from Int to S99Int
+
+  private val primes: Seq[Int] = LazyList.cons(2, LazyList.from(3, 2) filter { _.isPrime }) // which is the value of primes
 
   @tailrec
-  def gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m % n)
+  def gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m % n) // this is not logically tied to S99Int start.
   //gcd(48, 18) calls gcd(18, 48 % 18) = gcd(18, 12)
   //gcd(18, 12) calls gcd(12, 18 % 12) = gcd(12, 6)
   //gcd(12, 6) calls gcd(6, 12 % 6) = gcd(6, 0)
   //gcd(6, 0) returns 6 (base case)
 
-  implicit def intToS99Int(n: Int): S99Int = new S99Int(n) // Implicit conversion from Int to S99Int
+  def listPrimesInRange(r: Range): List[Int] = {
+    @tailrec
+    def primesInRange(n: Int, acc: List[Int]): List[Int] = {
+      if (n > r.end) acc.reverse
+      else if (n.isPrime) primesInRange(n + 1, n :: acc)
+      else primesInRange(n + 1, acc)
+    }
+
+    primesInRange(r.start, Nil)
+  }
 }
 
 @main
@@ -117,12 +113,13 @@ def main(): Unit = {
   println(s"7 is prime: ${30.isPrime}") // check how it works
   println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
   println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
-//  println(s"Totient of 10: ${10.totient}")
-//  println(s"Prime factors of 315: ${315.primeFactors}")
-//  println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
-//  println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
-//  println(s"Totient improved of 36: ${36.totientImproved}")
-//  10090.totientComparison
-//  println(s"List of primes in range 10 to 50: ${10.listPrimesinRange(10 to 50)}")
+  println(s"Totient of 10: ${10.totient}")
+  println(s"Prime factors of 315: ${315.primeFactors}")
+  println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
+  println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
+  println(s"Totient improved of 36: ${36.totientImproved}")
+  10090.totientComparison
+  println(s"List of primes in range 10 to 50: ${listPrimesInRange(10 to 50)}")
 //  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
+
 }
