@@ -23,24 +23,33 @@ class S99Int(val start: Int) {
 
   //P34
   def totient: Int = (1 to start).count(start.isCoprimeTo(_)) // Count numbers from 1 to `start` that are coprime to `start`
-  
+  // not optimized, uses brutal force, it will iterate all the ints.
+
   //P35
   def primeFactors: List[Int] = // Define method to return prime factors of `start` as a List[Int]
     @tailrec // Tail-recursive annotation for optimization
-    def primeFactorsR(n: Int, divisor: Int, acc: List[Int]): List[Int] =
-      if n == 1 then acc.reverse // Base case: if n is 1, return accumulated factors (in correct order)
-      else if n % divisor == 0 then // If current divisor divides n evenly
-        primeFactorsR(n / divisor, divisor, divisor :: acc) // Add divisor to list and recurse with reduced n
-      else
-        primeFactorsR(n, if (divisor == 2) 3 else divisor + 2, acc) // Otherwise, try the next possible divisor
+    def primeFactorsR(remaining: Int, divisor: Int, factorsAcc: List[Int]): List[Int] =
+      if remaining == 1 then factorsAcc.reverse // Base case: if n is 1, return accumulated factors (in correct order)
+      else if remaining % divisor == 0 then { // If current divisor divides n evenly
+        primeFactorsR(remaining / divisor, divisor, divisor :: factorsAcc) // Add divisor to list and recurse with reduced n
+        // lists in Scala are immutable, this operation :: is prepending, so it is O(1), while appending // is O(n).
+      } else
+        primeFactorsR(remaining, if (divisor == 2) 3 else divisor + 2, factorsAcc) // Otherwise, try the next possible divisor
     primeFactorsR(start, 2, Nil) // Kick off recursion with `start`, starting from divisor 2 and empty accumulator
 
   // P36: Return prime factors with their multiplicities as a List of tuples
   def primeFactorMultiplicity: List[(Int, Int)] =
+    // identity is a method that returns its input value, which in this case are the prime factors
+    // groupBy(identity) groups the prime factors by their value in a list
+    // and we count the size of the generated list for each prime factor
     primeFactors.groupBy(identity).map { case (p, list) => (p, list.length) }.toList.sortBy(_._1)
 
-  def primeFactorMultiplicityMap: Map[Int, Int] =
+  def primeFactorMultiplicityMap: Map[Int, Int] = {
     primeFactors.groupBy(identity).view.mapValues(_.size).toMap
+    // view creates a lazy view of the map, so the computation is not done until the map is accessed
+    // mapValues creates a new map with the same keys as the original map
+    // and the values are the size of the list of prime factors for each key
+  }
 
   // P37:
   def totientImproved: Int = {
@@ -113,13 +122,17 @@ def main(): Unit = {
   println(s"7 is prime: ${30.isPrime}") // check how it works
   println(s"Greatest common divisor between 36 and 63: ${gcd(36, 63)}")
   println(s"Determining whether 35 and 64 are coprime: ${35.isCoprimeTo(64)}")
-  println(s"Totient of 10: ${10.totient}")
+  println(s"Totient of 10: ${12.totient}")
+  // 12 - 1, 5, 7, 11
+  // 10 - 1, 3, 7, 9
+  // 6 - 1, 5
+  // 4 - 1, 3
   println(s"Prime factors of 315: ${315.primeFactors}")
   println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
   println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
-  println(s"Totient improved of 36: ${36.totientImproved}")
-  10090.totientComparison
-  println(s"List of primes in range 10 to 50: ${listPrimesInRange(10 to 50)}")
+//  println(s"Totient improved of 36: ${36.totientImproved}")
+//  10090.totientComparison
+//  println(s"List of primes in range 10 to 50: ${listPrimesInRange(10 to 50)}")
 //  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
 
 }
