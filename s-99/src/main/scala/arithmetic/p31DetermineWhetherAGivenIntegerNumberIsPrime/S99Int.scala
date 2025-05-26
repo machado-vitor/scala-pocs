@@ -55,8 +55,9 @@ class S99Int(val start: Int) {
   def totientImproved: Int = {
     primeFactorMultiplicity
       .map {
-        case (p, m) => (p - 1) * BigInt(p).pow(m - 1).toInt
-      }.product
+        case (primeFactor, multiplicity) => (primeFactor - 1) * BigInt(primeFactor).pow(multiplicity - 1).toInt
+        // For each prime factor, calculate (primeFactor - 1) * primeFactor^(multiplicity - 1)
+      }.product // Multiply all the results together to get the final result
   }
   
   // // P38:
@@ -84,8 +85,9 @@ class S99Int(val start: Int) {
   // Write a function to find the two prime numbers that sum up to a given even integer.
 
   def goldbach: (Int, Int) = {
+    // Check if the number is even and greater than 2
     primes.takeWhile(_ < start).find(p => (start - p).isPrime) match
-      case Some(p) => (p, start - p)
+      case Some(p) => (p, start - p) // If a prime `p` is found such that `start - p` is also prime, return the pair
       case None     => throw new IllegalArgumentException
   }   // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
 }
@@ -130,9 +132,8 @@ def main(): Unit = {
   println(s"Prime factors of 315: ${315.primeFactors}")
   println(s"Prime factors with multiplicity (list): ${315.primeFactorMultiplicity}")
   println(s"Prime factors with multiplicity (map): ${315.primeFactorMultiplicityMap}")
-//  println(s"Totient improved of 36: ${36.totientImproved}")
-//  10090.totientComparison
-//  println(s"List of primes in range 10 to 50: ${listPrimesInRange(10 to 50)}")
-//  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
-
+  println(s"Totient improved of 36: ${36.totientImproved}")
+  10090.totientComparison
+  println(s"List of primes in range 10 to 50: ${listPrimesInRange(10 to 50)}")
+  println(s"Goldbach's conjecture for 28: ${28.goldbach}")
 }
