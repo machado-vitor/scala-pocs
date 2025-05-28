@@ -109,12 +109,30 @@ object S99Int {
   def listPrimesInRange(r: Range): List[Int] = {
     @tailrec
     def primesInRange(n: Int, acc: List[Int]): List[Int] = {
-      if (n > r.end) acc.reverse
-      else if (n.isPrime) primesInRange(n + 1, n :: acc)
-      else primesInRange(n + 1, acc)
+      if (n > r.end) acc.reverse // If n exceeds the range end, return the accumulated list in reverse order
+      else if (n.isPrime) primesInRange(n + 1, n :: acc) // If n is prime, add it to the accumulator and recurse with n + 1
+      else primesInRange(n + 1, acc) // If n is not prime, just recurse with n + 1 without adding it to the accumulator
     }
 
     primesInRange(r.start, Nil)
+  }
+
+  // P41: Print all even numbers in a range and their Goldbach composition
+  def printGoldbachList(r: Range): Unit = {
+    r.filter(n => n > 2 && n % 2 == 0).foreach { n =>
+      val (p1, p2) = n.goldbach
+      println(s"$n = $p1 + $p2")
+    }
+  }
+
+  // P41 (bonus): Print Goldbach compositions where both primes are >= limit
+  def printGoldbachListLimited(r: Range, limit: Int): Unit = {
+    r.filter(n => n > 2 && n % 2 == 0).foreach { n =>
+      val (p1, p2) = n.goldbach
+      if (p1 >= limit && p2 >= limit) {
+        println(s"$n = $p1 + $p2")
+      }
+    }
   }
 }
 
@@ -136,4 +154,20 @@ def main(): Unit = {
   10090.totientComparison
   println(s"List of primes in range 10 to 50: ${listPrimesInRange(10 to 50)}")
   println(s"Goldbach's conjecture for 28: ${28.goldbach}")
+  
+  // P41 examples
+  println("\nP41: List of Goldbach compositions:")
+  printGoldbachList(9 to 20)
+  
+  println("\nP41: List of Goldbach compositions with primes >= 50:")
+  printGoldbachListLimited(1 to 2000, 50)
+  
+  // Count how many cases in range 2..3000 have both primes > 50
+  val count = (2 to 3000).count { n => 
+    if (n > 2 && n % 2 == 0) {
+      val (p1, p2) = n.goldbach
+      p1 >= 50 && p2 >= 50
+    } else false
+  }
+  println(s"\nNumber of Goldbach compositions in range 2..3000 with both primes >= 50: $count")
 }
