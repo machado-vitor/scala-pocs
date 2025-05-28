@@ -86,7 +86,7 @@ class S99Int(val start: Int) {
 
   def goldbach: (Int, Int) = {
     // Check if the number is even and greater than 2
-    primes.takeWhile(_ < start).find(p => (start - p).isPrime) match
+    primes.takeWhile(_ < start).find(p => (start - p).isPrime) match // takeWhile will include elements as long as the predicate returns true.
       case Some(p) => (p, start - p) // If a prime `p` is found such that `start - p` is also prime, return the pair
       case None     => throw new IllegalArgumentException
   }   // From 2 jump to 3, then only test odd numbers (skip even numbers > 2)
@@ -161,13 +161,4 @@ def main(): Unit = {
   
   println("\nP41: List of Goldbach compositions with primes >= 50:")
   printGoldbachListLimited(1 to 2000, 50)
-  
-  // Count how many cases in range 2..3000 have both primes > 50
-  val count = (2 to 3000).count { n => 
-    if (n > 2 && n % 2 == 0) {
-      val (p1, p2) = n.goldbach
-      p1 >= 50 && p2 >= 50
-    } else false
-  }
-  println(s"\nNumber of Goldbach compositions in range 2..3000 with both primes >= 50: $count")
 }
