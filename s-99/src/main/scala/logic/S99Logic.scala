@@ -2,8 +2,10 @@ package logic
 
 // P46: Truth tables for logical expressions.
 
-object S99Logic {
-  def not(a: Boolean): Boolean = a match {
+class S99Logic(a: Boolean) {
+  import S99Logic._
+
+  def not(): Boolean = a match {
     case true => false
     case false => true
   }
