@@ -107,14 +107,14 @@ object S99Int {
   //gcd(6, 0) returns 6 (base case)
 
   def listPrimesInRange(r: Range): List[Int] = {
-    @tailrec
+    @tailrec //understand what it does
     def primesInRange(n: Int, acc: List[Int]): List[Int] = {
       if (n > r.end) acc.reverse // If n exceeds the range end, return the accumulated list in reverse order
       else if (n.isPrime) primesInRange(n + 1, n :: acc) // If n is prime, add it to the accumulator and recurse with n + 1
       else primesInRange(n + 1, acc) // If n is not prime, just recurse with n + 1 without adding it to the accumulator
     }
 
-    primesInRange(r.start, Nil)
+    primesInRange(r.start, Nil) // understand what Nil does.
   }
 
   // P41: Print all even numbers in a range and their Goldbach composition
