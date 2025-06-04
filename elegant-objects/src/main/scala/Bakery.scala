@@ -5,7 +5,8 @@ private trait Bakery {
 
 object Bakery extends Bakery {
   override def cookBrownie(): Food = {
-    Food("Brownie")
+    Food("Brownie") // this is a syntactic sugar for `Food.apply("Brownie")`
+    // Food.apply("Brownie") // this internally does: `new Food("Brownie")`
   }
 
   override def brewCupOfCoffee(flavor: String): Drink = {
