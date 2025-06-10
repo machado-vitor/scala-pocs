@@ -1,4 +1,6 @@
 private trait Bakery {
+  // These are not actually methods of an object, they are procedures.
+  // This is not object-oriented.
   def cookBrownie(): Food
   def brewCupOfCoffee(flavor: String): Drink
 }
@@ -10,11 +12,11 @@ object Bakery extends Bakery {
   }
 
   override def brewCupOfCoffee(flavor: String): Drink = {
-    new Drink(flavor)
+    Drink(flavor)
   }
 }
 
 case class Food(name: String)
-class Drink(val flavor: String)
+case class Drink(flavor: String)
 
 // case class have a built-in apply method, so we can create instances without using the `new` keyword
