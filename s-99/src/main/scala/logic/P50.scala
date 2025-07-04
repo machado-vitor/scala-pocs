@@ -18,34 +18,51 @@ object P50 {
   private def buildHuffmanTree(freqs: List[(String, Int)]): HuffmanTree = {
     import scala.collection.mutable.PriorityQueue
 
-    // Create initial leaves and add to priority queue (min-heap)
+    // Define an ordering for the priority queue to create a min-heap based on frequency.
+    // The `.reverse` is needed because PriorityQueue is a max-heap by default.
     implicit val ordering: Ordering[HuffmanTree] = Ordering.by[HuffmanTree, Int] {
-      case Leaf(_, freq) => freq
+      case Leaf(_, freq)   => freq
       case Node(_, _, freq) => freq
     }.reverse
 
+    // Initialize the priority queue with a Leaf for each symbol.
     val queue = PriorityQueue[HuffmanTree]()
     freqs.foreach { case (symbol, freq) => queue.enqueue(Leaf(symbol, freq)) }
 
-    // Build tree by merging nodes with lowest frequencies
+    // Iteratively build the tree by merging the two nodes with the lowest frequencies.
     while (queue.size > 1) {
-      val right = queue.dequeue()
-      val left = queue.dequeue()
+      val right = queue.dequeue() // Node with the smallest frequency
+      val left  = queue.dequeue() // Node with the second smallest frequency
       val mergedFreq = getFreq(left) + getFreq(right)
+      // Create a new internal node and add it back to the queue.
       queue.enqueue(Node(left, right, mergedFreq))
     }
 
+    // The last remaining element in the queue is the root of the Huffman tree.
     queue.dequeue()
   }
 
+  /**
+   * Helper function to get the frequency from a HuffmanTree node.
+   */
   private def getFreq(tree: HuffmanTree): Int = tree match {
-    case Leaf(_, freq) => freq
+    case Leaf(_, freq)      => freq
     case Node(_, _, freq) => freq
   }
 
+  /**
+   * Recursively traverses the Huffman tree to generate the codes for each symbol.
+   *
+   * @param tree   The Huffman tree (or subtree) to traverse.
+   * @param prefix The Huffman code prefix accumulated so far.
+   * @return A list of (symbol, huffman_code) pairs.
+   */
   private def generateCodes(tree: HuffmanTree, prefix: String): List[(String, String)] = {
     tree match {
+      // When a leaf is reached, the code for that symbol is the accumulated prefix.
       case Leaf(symbol, _) => List((symbol, if (prefix.isEmpty) "0" else prefix))
+      // For an internal node, recursively traverse left and right.
+      // Append '0' for the left branch and '1' for the right branch.
       case Node(left, right, _) =>
         generateCodes(left, prefix + "0") ::: generateCodes(right, prefix + "1")
     }
