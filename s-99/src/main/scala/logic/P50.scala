@@ -1,5 +1,7 @@
 package logic
 
+import scala.collection.mutable
+
 object P50 {
 
   sealed trait HuffmanTree
@@ -16,7 +18,6 @@ object P50 {
   }
 
   private def buildHuffmanTree(freqs: List[(String, Int)]): HuffmanTree = {
-    import scala.collection.mutable.PriorityQueue
 
     // Define an ordering for the priority queue to create a min-heap based on frequency.
     // The `.reverse` is needed because PriorityQueue is a max-heap by default.
@@ -26,7 +27,7 @@ object P50 {
     }.reverse
 
     // Initialize the priority queue with a Leaf for each symbol.
-    val queue = PriorityQueue[HuffmanTree]()
+    val queue = mutable.PriorityQueue[HuffmanTree]()
     freqs.foreach { case (symbol, freq) => queue.enqueue(Leaf(symbol, freq)) }
 
     // Iteratively build the tree by merging the two nodes with the lowest frequencies.
