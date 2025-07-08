@@ -5,8 +5,8 @@ import scala.collection.mutable
 object P50 {
 
   sealed trait HuffmanTree
-  case class Leaf(symbol: String, freq: Int) extends HuffmanTree
-  case class Node(left: HuffmanTree, right: HuffmanTree, freq: Int) extends HuffmanTree
+  case class Leaf(symbol: String, freq: Int) extends HuffmanTree // Leaf nodes: Original symbols from input
+  case class Node(left: HuffmanTree, right: HuffmanTree, freq: Int) extends HuffmanTree // Internal nodes: Combination of two Huffman trees with their combined frequency
 
   def huffman(freqs: List[(String, Int)]): List[(String, String)] = {
     if (freqs.isEmpty) return List()
@@ -36,11 +36,11 @@ object P50 {
       val left  = queue.dequeue() // Node with the second smallest frequency
       val mergedFreq = getFreq(left) + getFreq(right)
       // Create a new internal node and add it back to the queue.
-      queue.enqueue(Node(left, right, mergedFreq))
+      queue.enqueue(Node(left, right, mergedFreq)) // Create a new node that combines the two smallest nodes
     }
 
     // The last remaining element in the queue is the root of the Huffman tree.
-    queue.dequeue()
+    queue.dequeue() // Return the root of the Huffman tree
   }
 
   /**
@@ -80,32 +80,32 @@ object P50 {
     val result1 = huffman(example1)
     println(s"Result: $result1")
     println()
-
-    // Example 2: Simple case
-    val example2 = List(("x", 3), ("y", 1))
-    println(s"Example 2: $example2")
-    val result2 = huffman(example2)
-    println(s"Result: $result2")
-    println()
-
-    // Example 3: Single symbol
-    val example3 = List(("z", 10))
-    println(s"Example 3: $example3")
-    val result3 = huffman(example3)
-    println(s"Result: $result3")
-    println()
-
-    // Example 4: More balanced frequencies
-    val example4 = List(("a", 10), ("b", 10), ("c", 10), ("d", 10))
-    println(s"Example 4: $example4")
-    val result4 = huffman(example4)
-    println(s"Result: $result4")
-    println()
-
-    // Example 5: Text analysis example
-    val example5 = List(("e", 12), ("t", 9), ("a", 8), ("o", 7), ("i", 6), ("n", 6), ("s", 4), ("h", 4), ("r", 4))
-    println(s"Example 5 (common English letters): $example5")
-    val result5 = huffman(example5)
-    println(s"Result: $result5")
+//
+//    // Example 2: Simple case
+//    val example2 = List(("x", 3), ("y", 1))
+//    println(s"Example 2: $example2")
+//    val result2 = huffman(example2)
+//    println(s"Result: $result2")
+//    println()
+//
+//    // Example 3: Single symbol
+//    val example3 = List(("z", 10))
+//    println(s"Example 3: $example3")
+//    val result3 = huffman(example3)
+//    println(s"Result: $result3")
+//    println()
+//
+//    // Example 4: More balanced frequencies
+//    val example4 = List(("a", 10), ("b", 10), ("c", 10), ("d", 10))
+//    println(s"Example 4: $example4")
+//    val result4 = huffman(example4)
+//    println(s"Result: $result4")
+//    println()
+//
+//    // Example 5: Text analysis example
+//    val example5 = List(("e", 12), ("t", 9), ("a", 8), ("o", 7), ("i", 6), ("n", 6), ("s", 4), ("h", 4), ("r", 4))
+//    println(s"Example 5 (common English letters): $example5")
+//    val result5 = huffman(example5)
+//    println(s"Result: $result5")
   }
 }
