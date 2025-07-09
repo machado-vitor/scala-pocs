@@ -69,43 +69,99 @@ object P50 {
     }
   }
 
+  /**
+   * Visualizes the Huffman tree
+   */
+  def visualizeTree(tree: HuffmanTree): String = {
+    val lines = buildTreeLines(tree)
+    lines.mkString("\n") + "\n"
+  }
+
+  private def buildTreeLines(tree: HuffmanTree): List[String] = {
+    tree match {
+      case Leaf(symbol, freq) =>
+        List(s"Left('$symbol'($freq))")
+
+      case Node(left, right, freq) =>
+        val leftLines = buildTreeLines(left)
+        val rightLines = buildTreeLines(right)
+
+        val leftWidth = if (leftLines.nonEmpty) leftLines.map(_.length).max else 0
+        val rightWidth = if (rightLines.nonEmpty) rightLines.map(_.length).max else 0
+
+        val rootLine = s"Node($freq)"
+        val rootWidth = rootLine.length
+
+        // Calculate spacing
+        val leftPadding = math.max(0, (leftWidth - rootWidth/2))
+        val rightPadding = math.max(0, (rightWidth - rootWidth/2))
+        val totalWidth = leftPadding + rootWidth + rightPadding
+
+        // Center the root
+        val rootCentered = " " * (totalWidth/2 - rootWidth/2) + rootLine
+
+        // Create connection lines
+        val leftPos = totalWidth/4
+        val rightPos = 3 * totalWidth/4
+
+        val branchLine = " " * leftPos + "┌" + "─" * (rightPos - leftPos - 1) + "┐"
+        val stemLine = " " * leftPos + "│" + " " * (rightPos - leftPos - 1) + "│"
+
+        // Pad child lines and position them
+        val paddedLeftLines = leftLines.map(line =>
+          " " * (leftPos - line.length/2) + line + " " * (totalWidth/2 - leftPos - line.length/2))
+        val paddedRightLines = rightLines.map(line =>
+          " " * (totalWidth/2) + " " * (rightPos - totalWidth/2 - line.length/2) + line)
+
+        val maxChildLines = math.max(paddedLeftLines.length, paddedRightLines.length)
+        val normalizedLeft = paddedLeftLines.padTo(maxChildLines, " " * (totalWidth/2))
+        val normalizedRight = paddedRightLines.padTo(maxChildLines, " " * (totalWidth/2))
+
+        val combinedChildLines = normalizedLeft.zip(normalizedRight).map {
+          case (left, right) => left + right.substring(totalWidth/2)
+        }
+
+        List(rootCentered, branchLine, stemLine) ++ combinedChildLines
+    }
+  }
 
   def main(args: Array[String]): Unit = {
-    println("Huffman Coding Examples")
-    println("=" * 40)
+    println("HUFFMAN TREE")
+    println("=" * 60)
 
     // Example 1: Original problem example
     val example1 = List(("a", 45), ("b", 13), ("c", 12), ("d", 16), ("e", 9), ("f", 5))
     println(s"Example 1: $example1")
+    val tree1 = buildHuffmanTree(example1)
+
+    println("\nOUTPUT::")
+    println(visualizeTree(tree1))
+
     val result1 = huffman(example1)
-    println(s"Result: $result1")
-    println()
-//
-//    // Example 2: Simple case
-//    val example2 = List(("x", 3), ("y", 1))
-//    println(s"Example 2: $example2")
-//    val result2 = huffman(example2)
-//    println(s"Result: $result2")
-//    println()
-//
-//    // Example 3: Single symbol
-//    val example3 = List(("z", 10))
-//    println(s"Example 3: $example3")
-//    val result3 = huffman(example3)
-//    println(s"Result: $result3")
-//    println()
-//
-//    // Example 4: More balanced frequencies
-//    val example4 = List(("a", 10), ("b", 10), ("c", 10), ("d", 10))
-//    println(s"Example 4: $example4")
-//    val result4 = huffman(example4)
-//    println(s"Result: $result4")
-//    println()
-//
-//    // Example 5: Text analysis example
-//    val example5 = List(("e", 12), ("t", 9), ("a", 8), ("o", 7), ("i", 6), ("n", 6), ("s", 4), ("h", 4), ("r", 4))
-//    println(s"Example 5 (common English letters): $example5")
-//    val result5 = huffman(example5)
-//    println(s"Result: $result5")
+    println(s"Huffman Codes: $result1")
+    println("=" * 60)
+
+    // Example 2: Simple case
+    val example2 = List(("x", 3), ("y", 1))
+    println(s"\nExample 2: $example2")
+    val tree2 = buildHuffmanTree(example2)
+
+    println("\nOUTPUT::")
+    println(visualizeTree(tree2))
+
+    val result2 = huffman(example2)
+    println(s"Huffman Codes: $result2")
+    println("=" * 40)
+
+    // Example 3: Balanced frequencies
+    val example4 = List(("a", 10), ("b", 10), ("c", 10), ("d", 10))
+    println(s"\nExample 3: $example4")
+    val tree4 = buildHuffmanTree(example4)
+
+    println("\nOUTPUT::")
+    println(visualizeTree(tree4))
+
+    val result4 = huffman(example4)
+    println(s"Huffman Codes: $result4")
   }
 }
