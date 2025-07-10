@@ -1,0 +1,2 @@
+this is a sample text file for huffman encoding demonstration. it contains various characters with different frequencies to test the compression algorithm effectively.
+
