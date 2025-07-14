@@ -3,16 +3,9 @@ import scala.util.Random
 
 @main
 def main(): Unit =
-  // Immutable Collections Demo
   immutableCollectionsDemo()
-
-  // Mutable Collections Demo
   mutableCollectionsDemo()
-
-  // Functional Operations Demo
   functionalOperationsDemo()
-
-  // Performance Comparison
   performanceComparison()
 
 def immutableCollectionsDemo(): Unit =
