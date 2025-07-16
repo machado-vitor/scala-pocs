@@ -54,18 +54,17 @@ def mutableCollectionsDemo(): Unit =
   println(s"After additions: $mutableList")
 
   // Mutable Array
-  val array = mutable.ArrayBuffer(1, 2, 3, 4, 5)
-  println(s"\nMutable Array: $array")
+  val array = Array(1, 2, 3, 4, 5)
+  println(s"\nMutable Array: ${array.mkString("[", ", ", "]")}")
   array(2) = 99
-  array += 6
-  println(s"After modifications: $array")
+  println(s"After mutation: ${array.mkString("[", ", ", "]")}")
 
   // Mutable Set
   val mutableSet = mutable.Set(1, 2, 3)
   println(s"\nMutable Set: $mutableSet")
   mutableSet += 4
-  mutableSet -= 2
-  println(s"After add/remove: $mutableSet")
+  mutableSet ++= Set(5, 6)
+  println(s"After additions: $mutableSet")
 
   // Mutable Map
   val mutableMap = mutable.Map("a" -> 1, "b" -> 2)
@@ -80,119 +79,101 @@ def functionalOperationsDemo(): Unit =
   println("⚡ FUNCTIONAL OPERATIONS")
   println("=" * 40)
 
-  val data = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-  println(s"Original data: $data")
+  val numbers = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+  println(s"Original numbers: $numbers")
 
   // Map - Transform each element
-  val doubled = data.map(_ * 2)
+  val doubled = numbers.map(_ * 2)
   println(s"Doubled: $doubled")
 
-  // Filter - Select elements based on predicate
-  val evens = data.filter(_ % 2 == 0)
+  // Filter - Select elements matching condition
+  val evens = numbers.filter(_ % 2 == 0)
   println(s"Even numbers: $evens")
 
-  // FlatMap - Map and flatten
-  val pairs = data.flatMap(x => List(x, x))
-  println(s"Duplicated elements: $pairs")
-
   // Fold/Reduce - Aggregate operations
-  val sum = data.reduce(_ + _)
-  val product = data.foldLeft(1)(_ * _)
+  val sum = numbers.foldLeft(0)(_ + _)
+  val product = numbers.reduce(_ * _)
   println(s"Sum: $sum, Product: $product")
 
+  // FlatMap - Map and flatten
+  val words = List("hello", "world", "scala")
+  val letters = words.flatMap(_.toCharArray)
+  println(s"All letters: $letters")
+
   // GroupBy - Group elements by a key
-  val grouped = data.groupBy(_ % 3)
-  println(s"Grouped by mod 3: $grouped")
+  val grouped = numbers.groupBy(_ % 3)
+  println(s"Grouped by remainder when divided by 3: $grouped")
 
-  // Partition - Split into two collections
-  val (odds, evenPartition) = data.partition(_ % 2 == 1)
-  println(s"Partitioned - Odds: $odds, Evens: $evenPartition")
-
-  // Zip - Combine two collections
-  val letters = List('a', 'b', 'c', 'd', 'e')
-  val zipped = data.take(5).zip(letters)
-  println(s"Zipped: $zipped")
-
-  // For comprehension - Syntactic sugar for map/flatMap/filter
-  val result = for {
-    x <- data
-    if x % 2 == 0
-    y <- List(10, 20)
-  } yield x * y
-  println(s"For comprehension result: $result")
-
-  // Lazy evaluation with View
-  val lazyResult = data.view
-    .map(x => { println(s"Processing $x"); x * 2 })
+  // Chaining operations
+  val result = numbers
+    .filter(_ % 2 == 0)
+    .map(_ * 3)
     .filter(_ > 10)
     .take(3)
-    .toList
-  println(s"Lazy evaluation result: $lazyResult")
+  println(s"Chained operations result: $result")
+
+  // For comprehensions
+  val pairs = for {
+    x <- List(1, 2, 3)
+    y <- List("a", "b")
+  } yield (x, y)
+  println(s"Cartesian product: $pairs")
+
+  // Option handling
+  val maybeNumber = Some(42)
+  val doubled2 = maybeNumber.map(_ * 2)
+  println(s"Option mapping: $doubled2")
 
   println()
 
 def performanceComparison(): Unit =
-  println("⏱️ PERFORMANCE COMPARISON")
+  println("⏱️  PERFORMANCE COMPARISON")
   println("=" * 40)
 
   val size = 100000
 
-  // Immutable List vs Mutable ListBuffer - Append operations
-  val startTime1 = System.nanoTime()
+  // Immutable List prepend
+  val start1 = System.nanoTime()
   var immutableList = List.empty[Int]
   for (i <- 1 to size) {
-    immutableList = immutableList :+ i  // O(n) operation
+    immutableList = i :: immutableList
   }
-  val immutableTime = (System.nanoTime() - startTime1) / 1000000
+  val time1 = (System.nanoTime() - start1) / 1e6
+  println(s"Immutable List prepend ($size elements): ${time1}ms")
 
-  val startTime2 = System.nanoTime()
+  // Mutable ListBuffer append
+  val start2 = System.nanoTime()
   val mutableBuffer = mutable.ListBuffer.empty[Int]
   for (i <- 1 to size) {
-    mutableBuffer += i  // O(1) operation
+    mutableBuffer += i
   }
-  val mutableTime = (System.nanoTime() - startTime2) / 1000000
+  val time2 = (System.nanoTime() - start2) / 1e6
+  println(s"Mutable ListBuffer append ($size elements): ${time2}ms")
 
-  println(s"Appending $size elements:")
-  println(s"Immutable List: ${immutableTime}ms")
-  println(s"Mutable Buffer: ${mutableTime}ms")
-  println(s"Mutable is ${immutableTime.toDouble / mutableTime}x faster for appends")
-
-  // Vector vs List - Random access
-  val vector = Vector.range(1, 10000)
-  val list = List.range(1, 10000)
-  val random = Random()
-
-  val vectorStartTime = System.nanoTime()
-  for (_ <- 1 to 1000) {
-    val index = random.nextInt(vector.size)
-    vector(index)
+  // Vector append
+  val start3 = System.nanoTime()
+  var vector = Vector.empty[Int]
+  for (i <- 1 to size) {
+    vector = vector :+ i
   }
-  val vectorAccessTime = (System.nanoTime() - vectorStartTime) / 1000000
+  val time3 = (System.nanoTime() - start3) / 1e6
+  println(s"Vector append ($size elements): ${time3}ms")
 
-  val listStartTime = System.nanoTime()
-  for (_ <- 1 to 1000) {
-    val index = random.nextInt(list.size)
-    list(index)
+  // Array operations
+  val start4 = System.nanoTime()
+  val array = Array.ofDim[Int](size)
+  for (i <- 0 until size) {
+    array(i) = i + 1
   }
-  val listAccessTime = (System.nanoTime() - listStartTime) / 1000000
+  val time4 = (System.nanoTime() - start4) / 1e6
+  println(s"Array direct assignment ($size elements): ${time4}ms")
 
-  println(s"\nRandom access (1000 operations):")
-  println(s"Vector: ${vectorAccessTime}ms")
-  println(s"List: ${listAccessTime}ms")
-  println(s"Vector is ${listAccessTime.toDouble / vectorAccessTime}x faster for random access")
-
-  // Demonstrating immutability benefits
-  println(s"\n🔒 IMMUTABILITY BENEFITS")
+  println()
+  println("🎯 KEY TAKEAWAYS")
   println("=" * 40)
-
-  val originalList = List(1, 2, 3, 4, 5)
-  val sharedReference = originalList
-  val modifiedList = originalList.map(_ * 2)
-
-  println(s"Original: $originalList")
-  println(s"Shared reference: $sharedReference")
-  println(s"Modified (new instance): $modifiedList")
-  println(s"Original unchanged: ${originalList eq sharedReference}")
-  println(s"Different instances: ${!(originalList eq modifiedList)}")
-
-  println("\n✅ POC Complete!")
+  println("1. Immutable collections are thread-safe and prevent accidental mutations")
+  println("2. Mutable collections offer better performance for frequent updates")
+  println("3. Choose List for frequent prepends, Vector for random access")
+  println("4. Functional operations enable elegant data transformations")
+  println("5. For comprehensions provide readable syntax for complex operations")
+  println("6. Always consider the performance characteristics of your chosen collection")
