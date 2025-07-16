@@ -9,6 +9,8 @@ def main(): Unit =
   performanceComparison()
 
 def immutableCollectionsDemo(): Unit =
+  // Immutable collections are thread-safe and prevent accidental mutations.
+  // Operations on immutable collections return new instances rather than modifying the original.
   println("📚 IMMUTABLE COLLECTIONS")
   println("=" * 40)
 
@@ -17,6 +19,11 @@ def immutableCollectionsDemo(): Unit =
   println(s"Original List: $numbers")
   println(s"Prepend 0: ${0 :: numbers}")
   println(s"Original unchanged: $numbers")
+  numbers ::: numbers // the elements of this will appers twice (same reference in memory) on the same list
+
+  // List methods:
+  // :: adds an element in front of the list
+  // ::: adds the elements of a list in front of the list
 
   // Vector - Indexed access, efficient append/prepend
   val vector = Vector(1, 2, 3, 4, 5)
@@ -43,6 +50,7 @@ def immutableCollectionsDemo(): Unit =
   println()
 
 def mutableCollectionsDemo(): Unit =
+  // Mutable collections are not thread-safe by default and require explicit synchronization for concurrent access.
   println("🔧 MUTABLE COLLECTIONS")
   println("=" * 40)
 
@@ -50,6 +58,7 @@ def mutableCollectionsDemo(): Unit =
   val mutableList = mutable.ListBuffer(1, 2, 3)
   println(s"Mutable List: $mutableList")
   mutableList += 4
+  // ++= alias for addAll
   mutableList ++= List(5, 6)
   println(s"After additions: $mutableList")
 
