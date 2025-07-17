@@ -43,9 +43,22 @@ def immutableCollectionsDemo(): Unit =
   println(s"Get value: ${map.get("b")}")
 
   // Range - Lazy sequence
+  // Represents a sequence of integers without storing all values in memory.
   val range = 1 to 10
   println(s"\nRange: $range")
+  // values are computed on-demand
   println(s"Even numbers: ${range.filter(_ % 2 == 0)}")
+
+  // The filter operation is lazy - no computation yet
+  val evenNumbers = (1 to 10).filter(_ % 2 == 0)
+  println(s"Filter created (lazy): $evenNumbers")
+
+  // Computation happens when you materialize the result
+  val materializedEvens = evenNumbers.toList
+  println(s"Materialized result: $materializedEvens")
+
+  //Ranges are ideal for loops, iterations,
+  // and mathematical sequences where you don't need all values at once.
 
   println()
 
