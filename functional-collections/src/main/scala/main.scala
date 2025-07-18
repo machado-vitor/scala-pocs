@@ -26,21 +26,25 @@ def immutableCollectionsDemo(): Unit =
   // ::: adds the elements of a list in front of the list
 
   // Vector - Indexed access, efficient append/prepend
-  val vector = Vector(1, 2, 3, 4, 5)
+  val vector = Vector(1, 2, 3, 4, 5) // create new vector
   println(s"\nVector: $vector")
-  println(s"Updated index 2: ${vector.updated(2, 99)}")
+  println(s"Updated index 2: ${vector.updated(2, 99)}") // this creates a new vector at index 2 replaced by 99
+  // original vector remains unchanged.
   println(s"Appended: ${vector :+ 6}")
 
   // Set - Unique elements
-  val set = Set(1, 2, 3, 2, 1)
+  val set = Set(1, 2, 3, 2, 1) // duplicates are automatically removed.
+  // set are unordered collections.
   println(s"\nSet (duplicates removed): $set")
-  println(s"Added element: ${set + 4}")
+  println(s"Added element: ${set + 4}") // creates a new set with 4 added. Original remains unchanged.
 
   // Map - Key-value pairs
   val map = Map("a" -> 1, "b" -> 2, "c" -> 3)
+  //Creation: creates a new immutable map with three key-value pairs
   println(s"\nMap: $map")
   println(s"Updated: ${map + ("d" -> 4)}")
-  println(s"Get value: ${map.get("b")}")
+  // adding a new pair returns a new map instance. Original map ramins unchanged.
+  println(s"Get value: ${map.get("b")}") // returns an Option.
 
   // Range - Lazy sequence
   // Represents a sequence of integers without storing all values in memory.
@@ -68,31 +72,36 @@ def mutableCollectionsDemo(): Unit =
   println("=" * 40)
 
   // Mutable List (ListBuffer)
-  val mutableList = mutable.ListBuffer(1, 2, 3)
+  // is efficient for frequent additions and mutations.
+  val mutableList = mutable.ListBuffer(1, 2, 3) // matable and growable list
   println(s"Mutable List: $mutableList")
-  mutableList += 4
+  mutableList += 4 // appends 4 to the buffer.
   // ++= alias for addAll
-  mutableList ++= List(5, 6)
+  mutableList ++= List(5, 6) // appends all elements from another list
   println(s"After additions: $mutableList")
 
   // Mutable Array
+  // should be used when you need fast, mutable, indexed storage.
   val array = Array(1, 2, 3, 4, 5)
   println(s"\nMutable Array: ${array.mkString("[", ", ", "]")}")
-  array(2) = 99
+  array(2) = 99 // Arrays allow direct, in-place mutation and are efficient for indexed access and updates.
   println(s"After mutation: ${array.mkString("[", ", ", "]")}")
 
   // Mutable Set
+  // All changes directly update the original set.
   val mutableSet = mutable.Set(1, 2, 3)
   println(s"\nMutable Set: $mutableSet")
-  mutableSet += 4
-  mutableSet ++= Set(5, 6)
+  mutableSet += 4 // adds 4 to the set
+  mutableSet ++= Set(5, 6) // adds multiple elements at once.
   println(s"After additions: $mutableSet")
 
   // Mutable Map
+  //
   val mutableMap = mutable.Map("a" -> 1, "b" -> 2)
   println(s"\nMutable Map: $mutableMap")
-  mutableMap("c") = 3
-  mutableMap += ("d" -> 4)
+  mutableMap("c") = 3 // sets the value for key "c" directly, adding it if missing or updating if present.
+  mutableMap += ("d" -> 4) // adds the key-value pair ("d", 4) to the map, or updates "d" if it exists.
+  // These two do the same, the only difference is the syntax.
   println(s"After additions: $mutableMap")
 
   println()
@@ -102,10 +111,14 @@ def functionalOperationsDemo(): Unit =
   println("=" * 40)
 
   val numbers = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+  // Taken from List javadoc:
+  //This class is optimal for last-in-first-out (LIFO), stack-like access patterns.
+  // If you need another access pattern, for example, random access or FIFO,
+  // consider using a collection more suited to this than List.
   println(s"Original numbers: $numbers")
 
   // Map - Transform each element
-  val doubled = numbers.map(_ * 2)
+  val doubled = numbers.map(_ * 2) // Creates a new list.
   println(s"Doubled: $doubled")
 
   // Filter - Select elements matching condition
