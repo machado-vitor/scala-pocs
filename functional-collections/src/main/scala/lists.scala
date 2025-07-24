@@ -1,5 +1,8 @@
 import scala.annotation.tailrec
 
+
+// Lists are linear.
+// access to the first element is much faster than access to the middle or end of a list.
 val fruits = List("Apple", "Orange", "Banana")
 val nums = 1 :: 2 :: Nil
 // same as 1 :: (2 :: Nul)
