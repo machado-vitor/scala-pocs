@@ -13,3 +13,5 @@ val nums = Vector(1, 2, 3)
 // Instead of x :: xs
 // use x +: xs or xs :+ x
 // vectors are symmetric, we don't have the advantage of lists to add elements to the left.
+
+// Both List and Vector extend the supertrait Seq, which in turn extends the supertrait Iterable.
