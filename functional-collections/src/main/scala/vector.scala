@@ -7,11 +7,14 @@
 // Changing an element.
 // it will create a new vector for that element that is being changed, and for their parents, until the root.
 
-val fruits = Vector("Apple", "Orange", "Banana")
-val nums = Vector(1, 2, 3)
 // Vector has the same operations as lists, except for :: operation.
 // Instead of x :: xs
 // use x +: xs or xs :+ x
 // vectors are symmetric, we don't have the advantage of lists to add elements to the left.
 
 // Both List and Vector extend the supertrait Seq, which in turn extends the supertrait Iterable.
+@main
+def vector(): Unit = {
+  val fruits = Vector("Apple", "Orange", "Banana")
+  val nums = Vector(1, 2, 3)  
+}
