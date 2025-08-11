@@ -28,7 +28,6 @@ def functionalOperators(): Unit = {
 
 
 // select operations
-
   val evenNumbers = numbers.filter(_ % 2 == 0)
   val shortWords = words.filter(_.length <= 5)
 
@@ -40,7 +39,6 @@ def functionalOperators(): Unit = {
 
 
 // Combine
-
   val sum = numbers.foldLeft(0)(_ + _)
   val product = numbers.take(5).foldLeft(1)(_ * _)
   val concatenated = words.foldLeft("")((acc, word) => acc + word.capitalize + " ")
