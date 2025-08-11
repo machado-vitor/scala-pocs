@@ -1,7 +1,6 @@
 package presentation
 
-import scala.collection.mutable
-import scala.collection.mutable.{ArrayBuffer, ArrayDeque, HashMap} // Explain: Import mutable collections - these are the "working" collections
+import scala.collection.mutable.{ArrayBuffer, ArrayDeque, HashMap}
 
 @main
 def builderFreeze(): Unit =
@@ -20,7 +19,7 @@ def queueProcessing(): Unit =
 
 @main
 def memoizedFib(): (BigInt, Int) = {
-  val memo = mutable.HashMap[Int, BigInt](0 -> 0, 1 -> 1)
+  val memo = HashMap[Int, BigInt](0 -> 0, 1 -> 1)
   def fib(k: Int): BigInt = memo.getOrElseUpdate(k, fib(k - 1) + fib(k - 2)) // cache with getOrElseUpdate
   (fib(45), memo.size) // return value and cache size to show effect
 }
