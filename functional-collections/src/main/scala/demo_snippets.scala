@@ -1,5 +1,3 @@
-
-
 @main
 // Transform: map, flatMap, collect
 def transform(): Unit =
@@ -26,4 +24,3 @@ def combine(): Unit =
   val ys = List(1, 2, 3, 4)
   println(ys.foldLeft(0)(_ + _)) // 10
   println(ys.scanLeft(0)(_ + _)) // List(0,1,3,6,10)  // running sums
-
