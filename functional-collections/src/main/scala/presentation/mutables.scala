@@ -1,9 +1,9 @@
 package presentation
 
-import scala.collection.mutable.{ArrayBuffer, ArrayDeque, HashMap}
+import scala.collection.mutable
+import scala.collection.mutable.{ArrayBuffer, ArrayDeque, HashMap} // Explain: Import mutable collections - these are the "working" collections
 
 @main
-// 1) Builder → Freeze (the pattern)
 def builderFreeze(): Unit =
   val buf = ArrayBuffer[Int]()
   buf.sizeHint(100_000)            // avoid repeated growth
@@ -11,7 +11,6 @@ def builderFreeze(): Unit =
   val xs: Vector[Int] = buf.toVector // publish immutable
 
 @main
-// 2) Queue processing (tight loop)
 def queueProcessing(): Unit =
   val q = ArrayDeque(1,2,3,4)
   while (q.nonEmpty) {
@@ -20,11 +19,8 @@ def queueProcessing(): Unit =
   }
 
 @main
-// 3) In-place counting (then freeze)
-def inPlaceCounting(): Unit =
-  val counts = HashMap.empty[String, Int]
-  for (w <- List("a","b","a","c","a","b"))
-    counts(w) = counts.getOrElse(w, 0) + 1
-
-  val result: Map[String, Int] = counts.toMap // hand back immutable
-  println(result) // Map(a -> 3, b -> 2, c -> 1)00000
+def memoizedFib(): (BigInt, Int) = {
+  val memo = mutable.HashMap[Int, BigInt](0 -> 0, 1 -> 1)
+  def fib(k: Int): BigInt = memo.getOrElseUpdate(k, fib(k - 1) + fib(k - 2)) // cache with getOrElseUpdate
+  (fib(45), memo.size) // return value and cache size to show effect
+}
