@@ -24,3 +24,5 @@ def combine(): Unit =
   val ys = List(1, 2, 3, 4)
   println(ys.foldLeft(0)(_ + _)) // 10
   println(ys.scanLeft(0)(_ + _)) // List(0,1,3,6,10)  // running sums
+  // scanLeft is useful when you need to track the progression of a computation, not just the final result.
+
