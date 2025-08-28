@@ -34,5 +34,20 @@ def public_constants(): Unit = {
   val rows = List("a", "b", "c")
 
   val out: java.io.PrintStream = System.out
-  RowsBad2(rows).print(out)
+
+  println("=== RowsBad2 (uses global ConstantsBad) ===")
+  new RowsBad2(rows).print(out)
+
+  println("\n=== Rows2 (uses private constant) ===")
+  new Rows2(rows).print(out)
+
+  println("\n=== Records2 with CRLF ===")
+  val writer1 = new java.io.OutputStreamWriter(System.out)
+  new Records2(rows, new CrLf).write(writer1)
+  writer1.flush()
+
+  println("\n=== Records2 with LF ===")
+  val writer2 = new java.io.OutputStreamWriter(System.out)
+  new Records2(rows, new Lf).write(writer2)
+  writer2.flush()
 }
