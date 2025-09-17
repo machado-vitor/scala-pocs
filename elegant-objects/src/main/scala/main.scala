@@ -1,4 +1,4 @@
 @main
 def main(): Unit = {
-  val employee = Employee(DefaultCash(1000))
+  val employee = new Employee(DefaultCash(1000))
 }
