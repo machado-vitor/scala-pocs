@@ -8,7 +8,7 @@ import org.scalatest.matchers.should.Matchers
 class UserServiceSpec extends AnyFunSuite with Matchers:
   test("insert and fetch user") {
     val svc = new UserService
-    val user = UserDto("1", "Jane", "jane@example.com")
+    val user = UserDto(1, "Jane", "jane@example.com")
 
     val inserted = svc.insert(user)
     inserted shouldBe user
@@ -16,21 +16,21 @@ class UserServiceSpec extends AnyFunSuite with Matchers:
     val all = svc.findAll()
     all should contain (user)
 
-    val byId = svc.findById("1")
+    val byId = svc.findById(1)
     byId shouldBe user
   }
 
   test("findById throws UserNotFoundException when missing") {
     val svc = new UserService
     val ex = intercept[UserNotFoundException] {
-      svc.findById("missing")
+      svc.findById(2)
     }
-    ex.getMessage should include ("missing")
+    ex.getMessage should include ("2")
   }
 
   test("insert throws UserAlreadyExistsException on duplicate id") {
     val svc = new UserService
-    val user = UserDto("1", "Jane", "jane@example.com")
+    val user = UserDto(1, "Jane", "jane@example.com")
     svc.insert(user)
     val ex = intercept[UserAlreadyExistsException] {
       svc.insert(user)

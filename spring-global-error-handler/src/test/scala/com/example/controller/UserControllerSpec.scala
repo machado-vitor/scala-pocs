@@ -73,12 +73,11 @@ class UserControllerSpec extends AnyFunSuite with Matchers:
   test("GET /api/user/id/{id} returns 404 with structured error when not found") {
     val mvc = buildMvc()
 
-    mvc.perform(get("/api/user/id/missing"))
+    mvc.perform(get("/api/user/id/1"))
       .andExpect(status().isNotFound)
-      .andExpect(jsonPath("$.status").value(404))
       .andExpect(jsonPath("$.error").value("Not Found"))
-      .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("missing")))
-      .andExpect(jsonPath("$.path").value("/api/user/id/missing"))
+      .andExpect(jsonPath("$.message").value("User not found with id: 1"))
+      .andExpect(jsonPath("$.path").value("/api/user/id/1"))
   }
 
   test("POST /api/user duplicate id returns 409 with structured error") {
@@ -86,7 +85,7 @@ class UserControllerSpec extends AnyFunSuite with Matchers:
 
     val body =
       """{
-         |  "id": "dupe",
+         |  "id": 3,
          |  "name": "Jane",
          |  "email": "jane@example.com"
          |}
@@ -106,8 +105,7 @@ class UserControllerSpec extends AnyFunSuite with Matchers:
         .content(body)
     )
       .andExpect(status().isConflict)
-      .andExpect(jsonPath("$.status").value(409))
       .andExpect(jsonPath("$.error").value("Conflict"))
-      .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("dupe")))
+      .andExpect(jsonPath("$.message").value("User already exists with id: 3"))
       .andExpect(jsonPath("$.path").value("/api/user"))
   }

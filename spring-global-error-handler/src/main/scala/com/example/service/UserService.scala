@@ -9,12 +9,12 @@ import scala.jdk.CollectionConverters.*
 
 @Service
 class UserService:
-  private val store = new ConcurrentHashMap[String, UserDto]()
+  private val store = new ConcurrentHashMap[Long, UserDto]()
 
   def findAll(): List[UserDto] =
     store.values().asScala.toList
 
-  def findById(id: String): UserDto =
+  def findById(id: Long): UserDto =
     Option(store.get(id)).getOrElse(throw new UserNotFoundException(s"User not found with id: $id"))
 
   def insert(user: UserDto): UserDto =

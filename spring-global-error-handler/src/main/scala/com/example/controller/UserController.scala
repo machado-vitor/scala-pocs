@@ -14,7 +14,7 @@ class UserController(userService: UserService):
     userService.findAll()
 
   @GetMapping(Array("/user/id/{id}"))
-  def findUserById(@PathVariable id: String): ResponseEntity[UserDto] =
+  def findUserById(@PathVariable id: Long): ResponseEntity[UserDto] =
     val user = userService.findById(id) // throws if not found
     ResponseEntity.ok(user)
 
