@@ -15,6 +15,6 @@
 // Both List and Vector extend the supertrait Seq, which in turn extends the supertrait Iterable.
 @main
 def vector(): Unit = {
-  val fruits = Vector("Apple", "Orange", "Banana")
-  val nums = Vector(1, 2, 3)  
+  val fruits: Seq[String] = Vector("Apple", "Orange", "Banana")
+  val nums = Vector(1, 2, 3)
 }
