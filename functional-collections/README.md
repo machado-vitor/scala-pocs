@@ -6,7 +6,7 @@ Top-level base for all immutable collections.
 - **Seq** = ordered collection
     - **IndexedSeq → Vector** (fast random access)
     - **LinearSeq → List** (fast head, recursive) (Seq(...) creates a List by default)
-    - **Range** (efficient numeric interval)
+    - **Range** (efficient numeric interval) (this is also a IndexedSeq)
 
 - **Set** = unique elements
     - **HashSet** (default)
