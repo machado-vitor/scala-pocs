@@ -35,3 +35,14 @@
 //   def add(a: Int, b: Int) = a + b
 //   def mul(a: Int, b: Int) = a * b
 
+// ABOUT COMPANION OBJECT
+// --------------------------------------------------------------------------------
+// Has the same name as a class
+// Lives in the same file
+// Can access private members of the class
+// provides class-level functionality(like static methods)
+// --------------------------------------------------------------------------------
+// Factory methods (apply)
+// class Person(val name: String, val age: Int)
+// object Person:
+//    def apply(name: String, age: Int) = new Person(name, age)
