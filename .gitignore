@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+.bsp/
+.venv/
+.ipynb_checkpoints/
+target/
+project/target/
+project/project/
