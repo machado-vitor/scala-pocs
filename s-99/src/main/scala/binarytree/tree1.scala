@@ -18,7 +18,8 @@ package binarytree {
 
   // P55
   object Tree {
-    def cBalanced[T](n: Int, value: T): List[Tree[T]] =
+    // this generates all combinations of valid left/right subtrees.
+    def cBalanced[T](n: Int, value: T): List[Tree[T]] = {
       n match {
         case 0 => List(End)
         case _ =>
@@ -29,14 +30,15 @@ package binarytree {
             for {
               left <- cBalanced(smallerHalf, value)
               right <- cBalanced(smallerHalf, value)
-            } yield Node(value, left, right)
+            } yield Node(value, left, right) // resolve, balanced subtrees, as for n = 3
           else
             for {
               left <- cBalanced(smallerHalf, value)
               right <- cBalanced(largerHalf, value)
-              (l, r) <- List((left, right), (right, left))
+              (l, r) <- List((left, right), (right, left)) // unbalanced subtrees, for n = 4 for example, generate both sides.
             } yield Node(value, l, r)
       }
+    }
   }
 
   object Tree1 extends App {
