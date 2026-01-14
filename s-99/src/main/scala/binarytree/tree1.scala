@@ -46,5 +46,10 @@ package binarytree {
     println(tree)
 
     Tree.cBalanced(4, "x").foreach(println)
+    // balanced binary trees with 4 nodes.
+    // T(x T(x . .) T(x . T(x . .))) L subtree: 1 node, R subtree: 2 nodes
+    // T(x T(x . T(x . .)) T(x . .)) L subtree: 2 nodes, R subtree: 1 node
+    // T(x T(x . .) T(x T(x . .) .)) L subtree: 1 node, R subtree: 2 nodes
+    // T(x T(x T(x . .) .) T(x . .)) L subtree: 2 nodes, R subtree: 1 node
   }
 }
