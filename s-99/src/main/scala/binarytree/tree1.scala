@@ -2,13 +2,24 @@
 
 package binarytree {
 
-  sealed abstract class Tree[+T]
+  sealed abstract class Tree[+T] {
+    def isMirrorOf[V](tree: Tree[V]): Boolean
+    def isSymmetric: Boolean
+  }
 
   case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
+    override def isMirrorOf[V](tree: Tree[V]): Boolean = tree match {
+      case t: Node[V] => left.isMirrorOf(t.right) && right.isMirrorOf(t.left)
+      case _ => false
+    }
+
+    override def isSymmetric: Boolean = left.isMirrorOf(right)
     override def toString: String = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
   }
 
   case object End extends Tree[Nothing] {
+    override def isMirrorOf[V](tree: Tree[V]): Boolean = tree == End
+    override def isSymmetric: Boolean = true
     override def toString = "."
   }
 
@@ -51,5 +62,9 @@ package binarytree {
     // T(x T(x . T(x . .)) T(x . .)) L subtree: 2 nodes, R subtree: 1 node
     // T(x T(x . .) T(x T(x . .) .)) L subtree: 1 node, R subtree: 2 nodes
     // T(x T(x T(x . .) .) T(x . .)) L subtree: 2 nodes, R subtree: 1 node
+
+    //P56
+    println(Node('a', Node('b'), Node('c')).isSymmetric) // true
+    println(Node('a', End, Node('c')).isSymmetric) // false
   }
 }
