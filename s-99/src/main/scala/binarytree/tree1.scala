@@ -3,6 +3,7 @@
 package binarytree {
 
   // trait: supports multiple inheritance - intended for behavior and capabilities, weaker binary compatibility with java
+  // and are better for mixins, and are good practice not hold state, it can cause conflict if other trait is used with same fields.
   // abstract class: only single inheritance - better for holding state
   sealed abstract class Tree[+T] {
     def isMirrorOf[V](tree: Tree[V]): Boolean
