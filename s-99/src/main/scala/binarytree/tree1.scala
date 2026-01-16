@@ -7,7 +7,7 @@ package binarytree {
     def isSymmetric: Boolean
   }
 
-  case class Node[+T](value: T, left: Tree[T], right: Tree[T]) extends Tree[T] {
+  case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] {
     override def isMirrorOf[V](tree: Tree[V]): Boolean = tree match {
       case t: Node[V] => left.isMirrorOf(t.right) && right.isMirrorOf(t.left)
       case _ => false
@@ -21,10 +21,6 @@ package binarytree {
     override def isMirrorOf[V](tree: Tree[V]): Boolean = tree == End
     override def isSymmetric: Boolean = true
     override def toString = "."
-  }
-
-  object Node {
-    def apply[T](value: T): Node[T] = Node(value, End, End)
   }
 
   // P55
