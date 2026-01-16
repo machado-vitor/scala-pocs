@@ -2,6 +2,8 @@
 
 package binarytree {
 
+  // trait: supports multiple inheritance - intended for behavior and capabilities, weaker binary compatibility with java
+  // abstract class: only single inheritance - better for holding state
   sealed abstract class Tree[+T] {
     def isMirrorOf[V](tree: Tree[V]): Boolean
     def isSymmetric: Boolean
