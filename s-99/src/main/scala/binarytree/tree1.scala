@@ -17,7 +17,7 @@ package binarytree {
     }
 
     override def isSymmetric: Boolean = left.isMirrorOf(right)
-    override def toString: String = "T(" + value.toString + " " + left.toString + " " + right.toString + ")"
+    override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
   }
 
   case object End extends Tree[Nothing] {
