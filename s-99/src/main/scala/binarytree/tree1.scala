@@ -6,11 +6,15 @@ package binarytree {
   // and are better for mixins, and are good practice not hold state, it can cause conflict if other trait is used with same fields.
   // abstract class: only single inheritance - better for holding state
 
-  //  A - Invariant
+  //  A - Invariant (flows both ways)
   // Can't have subtyping relationship, even though the contained types might be related by inheritance.
 
-  // +A - Covariant
-  // -A - Contravariant
+  // +A - Covariant (only flows out)
+  // If A is subtype of B, Cov[A] is subtype os Cov[B].
+  // this is necessary for type safety reasons, because we could inject wrong subtypes.
+  // that means that a type parameter +A must apper only in covariant positions (return types, never parameter types)
+
+
 
   sealed abstract class Tree[+T] {
     def isMirrorOf[V](tree: Tree[V]): Boolean
