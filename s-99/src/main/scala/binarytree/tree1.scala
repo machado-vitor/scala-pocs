@@ -54,11 +54,14 @@ package binarytree {
           val subtreeNodes = n - 1 // 1 node is the root, so we remove it, the rest go to children
           val smallerHalf = subtreeNodes / 2
           val largerHalf = subtreeNodes - smallerHalf
-          if (smallerHalf == largerHalf)
+          if (smallerHalf == largerHalf) {
+            // for is a syntax sugar for chaining operations on monads
             for {
               left <- cBalanced(smallerHalf, value)
               right <- cBalanced(smallerHalf, value)
-            } yield Node(value, left, right) // resolve, balanced subtrees, as for n = 3
+            } yield Node(value, left, right) // yield rewraps the result
+            // it means: Return this value, wrapped in the same context
+          } // resolve, balanced subtrees, as for n = 3
           else
             for {
               left <- cBalanced(smallerHalf, value)
