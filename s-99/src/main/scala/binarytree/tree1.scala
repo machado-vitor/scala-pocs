@@ -26,6 +26,7 @@ package binarytree {
   sealed abstract class Tree[+T] {
     def isMirrorOf[V](tree: Tree[V]): Boolean
     def isSymmetric: Boolean
+    def addValue[U >: T: Ordering](x: U): Tree[U]
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] {
@@ -35,12 +36,20 @@ package binarytree {
     }
 
     override def isSymmetric: Boolean = left.isMirrorOf(right)
+
+    override def addValue[U >: T: Ordering](x: U): Tree[U] = {
+      val ord = summon[Ordering[U]]
+      if (ord.lt(x, value)) Node(value, left.addValue(x), right)
+      else Node(value, left, right.addValue(x))
+    }
+
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
   }
 
   case object End extends Tree[Nothing] {
     override def isMirrorOf[V](tree: Tree[V]): Boolean = tree == End
     override def isSymmetric: Boolean = true
+    override def addValue[U: Ordering](x: U): Tree[U] = Node(x)
     override def toString = "."
   }
 
