@@ -95,5 +95,10 @@ package binarytree {
     //P56
     println(Node('a', Node('b'), Node('c')).isSymmetric) // true
     println(Node('a', End, Node('c')).isSymmetric) // false
+
+    //P57
+    println(End.addValue(2)) // T(2 . .)
+    println(End.addValue(2).addValue(3)) // T(2 . T(3 . .))
+    println(End.addValue(2).addValue(3).addValue(0)) // T(2 T(0 . .) T(3 . .))
   }
 }
