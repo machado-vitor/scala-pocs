@@ -79,6 +79,9 @@ package binarytree {
             } yield Node(value, l, r)
       }
     }
+
+    def fromList[T: Ordering](list: List[T]): Tree[T] =
+      list.foldLeft(End: Tree[T])((tree, value) => tree.addValue(value))
   }
 
   object Tree1 extends App {
@@ -100,5 +103,8 @@ package binarytree {
     println(End.addValue(2)) // T(2 . .)
     println(End.addValue(2).addValue(3)) // T(2 . T(3 . .))
     println(End.addValue(2).addValue(3).addValue(0)) // T(2 T(0 . .) T(3 . .))
+    println(Tree.fromList(List(3, 2, 5, 7, 1))) // T(3 T(2 T(1 . .) .) T(5 . T(7 . .)))
+    println(Tree.fromList(List(5, 3, 18, 1, 4, 12, 21)).isSymmetric) // true
+    println(Tree.fromList(List(3, 2, 5, 7, 4)).isSymmetric) // false
   }
 }
