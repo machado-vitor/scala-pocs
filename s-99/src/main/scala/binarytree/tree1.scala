@@ -26,7 +26,7 @@ package binarytree {
   sealed abstract class Tree[+T] {
     def isMirrorOf[V](tree: Tree[V]): Boolean
     def isSymmetric: Boolean
-    def addValue[U >: T: Ordering](x: U): Tree[U]
+    def addValue[U >: T: Ordering](x: U): Tree[U] // U must be a supertype of T
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] {
