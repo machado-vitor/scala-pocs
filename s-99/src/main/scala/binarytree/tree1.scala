@@ -80,6 +80,13 @@ package binarytree {
       }
     }
 
+    // P58 Symmetric + completely balanced trees with n nodes.
+    def symmetricBalancedTrees[T](n: Int, value: T): List[Node[T]] =
+      cBalanced(n, value)
+        .filter(_.isSymmetric)
+        .collect { case t: Node[T @unchecked] => t }
+
+
     def fromList[T: Ordering](list: List[T]): Tree[T] =
       list.foldLeft(End: Tree[T])((tree, value) => tree.addValue(value))
   }
