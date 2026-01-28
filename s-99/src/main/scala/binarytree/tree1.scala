@@ -86,6 +86,33 @@ package binarytree {
         .filter(_.isSymmetric)
         .collect { case t: Node[T @unchecked] => t }
 
+    def hbalTrees[T](h: Int, value: T): List[Tree[T]] = h match {
+      case n if n < 0 =>
+        Nil
+      case 0 =>
+        List(End)
+      case 1 =>
+        List(Node(value))
+      case _ =>
+        val t1 = hbalTrees(h - 1, value) // height h-1
+        val t2 = hbalTrees(h - 2, value) // height h-2
+        val same =
+          for {
+            l <- t1
+            r <- t1
+          } yield Node(value, l, r)
+        val leftHigh =
+          for {
+            l <- t1
+            r <- t2
+          } yield Node(value, l, r)
+        val rightHigh =
+          for {
+            l <- t2
+            r <- t1
+          } yield Node(value, l, r)
+        same ++ leftHigh ++ rightHigh
+    }
 
     def fromList[T: Ordering](list: List[T]): Tree[T] =
       list.foldLeft(End: Tree[T])((tree, value) => tree.addValue(value))
