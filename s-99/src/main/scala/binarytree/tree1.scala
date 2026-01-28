@@ -113,5 +113,12 @@ package binarytree {
     println(Tree.fromList(List(3, 2, 5, 7, 1))) // T(3 T(2 T(1 . .) .) T(5 . T(7 . .)))
     println(Tree.fromList(List(5, 3, 18, 1, 4, 12, 21)).isSymmetric) // true
     println(Tree.fromList(List(3, 2, 5, 7, 4)).isSymmetric) // false
+
+    // P58
+    println(Tree.symmetricBalancedTrees(5, "x").size) // 2
+    println(Tree.symmetricBalancedTrees(7, "x").size) // 1
+    println(Tree.symmetricBalancedTrees(9, "x").size) // 4
+
+    Tree.symmetricBalancedTrees(5, "x").foreach(println)
   }
 }
