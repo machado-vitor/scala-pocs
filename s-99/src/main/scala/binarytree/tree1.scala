@@ -27,6 +27,7 @@ package binarytree {
     def isMirrorOf[V](tree: Tree[V]): Boolean
     def isSymmetric: Boolean
     def addValue[U >: T: Ordering](x: U): Tree[U] // U must be a supertype of T
+    def nodeCount: Int
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] {
@@ -43,6 +44,8 @@ package binarytree {
       else Node(value, left, right.addValue(x))
     }
 
+    override def nodeCount: Int = 1 + left.nodeCount + right.nodeCount
+
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
   }
 
@@ -50,6 +53,7 @@ package binarytree {
     override def isMirrorOf[V](tree: Tree[V]): Boolean = tree == End
     override def isSymmetric: Boolean = true
     override def addValue[U: Ordering](x: U): Tree[U] = Node(x)
+    override def nodeCount: Int = 0
     override def toString = "."
   }
 
@@ -114,6 +118,23 @@ package binarytree {
         same ++ leftHigh ++ rightHigh
     }
 
+    def minHbalNodes(h: Int): Int = h match {
+      case n if n < 1 => 0
+      case 1 => 1
+      case _ => 1 + minHbalNodes(h - 1) + minHbalNodes(h - 2)
+    }
+
+    def maxHbalHeight(n: Int): Int =
+      LazyList.from(1).takeWhile(minHbalNodes(_) <= n).last
+
+    def hbalTreesWithNodes[T](n: Int, value: T): List[Node[T]] = {
+      val minH = if (n == 0) 0 else (math.log(n) / math.log(2) + 1).toInt
+      val maxH = maxHbalHeight(n)
+      (minH to maxH).flatMap(hbalTrees(_, value)).collect {
+        case t: Node[T @unchecked] if t.nodeCount == n => t
+      }.toList
+    }
+
     def fromList[T: Ordering](list: List[T]): Tree[T] =
       list.foldLeft(End: Tree[T])((tree, value) => tree.addValue(value))
   }
@@ -151,5 +172,11 @@ package binarytree {
     // P59
     println(Tree.hbalTrees(3, "x").size) // 15
     Tree.hbalTrees(3, "x").foreach(println)
+
+    // P60
+    println(Tree.minHbalNodes(3)) // 4
+    println(Tree.maxHbalHeight(4)) // 3
+    Tree.hbalTreesWithNodes(4, "x").foreach(println)
+    println(Tree.hbalTreesWithNodes(15, "x").size) // 1553
   }
 }
