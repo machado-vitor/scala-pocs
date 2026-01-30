@@ -147,5 +147,9 @@ package binarytree {
     println(Tree.symmetricBalancedTrees(9, "x").size) // 4
 
     Tree.symmetricBalancedTrees(5, "x").foreach(println)
+
+    // P59
+    println(Tree.hbalTrees(3, "x").size) // 15
+    Tree.hbalTrees(3, "x").foreach(println)
   }
 }
