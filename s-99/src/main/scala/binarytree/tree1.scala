@@ -88,7 +88,7 @@ package binarytree {
     def symmetricBalancedTrees[T](n: Int, value: T): List[Node[T]] =
       cBalanced(n, value)
         .filter(_.isSymmetric)
-        .collect { case t: Node[T @unchecked] => t }
+        .collect { case t: Node[T] => t }
 
     def hbalTrees[T](h: Int, value: T): List[Tree[T]] = h match {
       case n if n < 0 =>
@@ -131,7 +131,7 @@ package binarytree {
       val minH = if (n == 0) 0 else (math.log(n) / math.log(2) + 1).toInt
       val maxH = maxHbalHeight(n)
       (minH to maxH).flatMap(hbalTrees(_, value)).collect {
-        case t: Node[T @unchecked] if t.nodeCount == n => t
+        case t: Node[T] if t.nodeCount == n => t
       }.toList
     }
 
