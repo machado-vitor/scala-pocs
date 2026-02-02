@@ -87,8 +87,8 @@ package binarytree {
     // P58 Symmetric + completely balanced trees with n nodes.
     def symmetricBalancedTrees[T](n: Int, value: T): List[Node[T]] =
       cBalanced(n, value)
-        .filter(_.isSymmetric)
-        .collect { case t: Node[T] => t }
+        .filter(_.isSymmetric) // keep only the trees where left subtree is a mirror of the right subtree.
+        .collect { case t: Node[T] => t } // narrows  type from Tree[T] to Node[T]
 
     def hbalTrees[T](h: Int, value: T): List[Tree[T]] = h match {
       case n if n < 0 =>
