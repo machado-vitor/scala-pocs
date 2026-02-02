@@ -90,7 +90,10 @@ package binarytree {
         .filter(_.isSymmetric) // keep only the trees where left subtree is a mirror of the right subtree.
         .collect { case t: Node[T] => t } // narrows  type from Tree[T] to Node[T]
 
-    def hbalTrees[T](h: Int, value: T): List[Tree[T]] = h match {
+    // h < 0 -> no trees possible
+    // h == 0 -> just End (empty tree, height 0)
+    // h == 1 -> a single leaf Node(value) (height 1)
+    def hbalTrees[T](h: Int, value: T): List[Tree[T]] = h match { // it genarates all height ;balanced binary trees of exaclty height h.
       case n if n < 0 =>
         Nil
       case 0 =>
