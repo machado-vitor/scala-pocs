@@ -127,8 +127,11 @@ package binarytree {
       case _ => 1 + minHbalNodes(h - 1) + minHbalNodes(h - 2)
     }
 
-    def maxHbalHeight(n: Int): Int =
+    def maxHbalHeight(n: Int): Int = {
       LazyList.from(1).takeWhile(minHbalNodes(_) <= n).last
+      // lazylist are only computed when accessed. once an element is computed, it's cached.
+      // that's the different from an Iterator, which is use-once.
+    }
 
     def hbalTreesWithNodes[T](n: Int, value: T): List[Node[T]] = {
       val minH = if (n == 0) 0 else (math.log(n) / math.log(2) + 1).toInt
