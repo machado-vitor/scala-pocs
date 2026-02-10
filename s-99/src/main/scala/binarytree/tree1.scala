@@ -31,7 +31,7 @@ package binarytree {
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] { // Node is used as covariant, it can only read these files, never write to them.
-    override def isMirrorOf[V](tree: Tree[V]): Boolean = tree match {
+    override def isMirrorOf[V](tree: Tree[V]): Boolean = tree match { // V is invariant because it appears in a contravariant position (method parameter)
       case t: Node[V] => left.isMirrorOf(t.right) && right.isMirrorOf(t.left)
       case _ => false
     }
