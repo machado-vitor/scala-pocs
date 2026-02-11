@@ -32,8 +32,8 @@ package binarytree {
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] { // Node is used as covariant, it can only read these files, never write to them.
     override def isMirrorOf[V](tree: Tree[V]): Boolean = tree match { // V is invariant because it appears in a contravariant position (method parameter)
-      case t: Node[V] => left.isMirrorOf(t.right) && right.isMirrorOf(t.left)
-      case _ => false
+      case t: Node[V] => left.isMirrorOf(t.right) && right.isMirrorOf(t.left) // recursively check if left subtree mirrors the other's right AND right subtree mirrors the other's left
+      case _ => false // if comparing against anything else (like End): return false.
     }
 
     override def isSymmetric: Boolean = left.isMirrorOf(right)
