@@ -29,6 +29,7 @@ package binarytree {
     def addValue[U >: T: Ordering](x: U): Tree[U] // U must be a supertype of T
     def nodeCount: Int
     def leafCount: Int
+    def leafList: List[T]
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] { // Node is used as covariant, it can only read these files, never write to them.
@@ -52,6 +53,11 @@ package binarytree {
       case _ => left.leafCount + right.leafCount // recursively count leaves in subtrees
     }
 
+    override def leafList: List[T] = (left, right) match {
+      case (End, End) => List(value) // this is a leaf, return its value
+      case _ => left.leafList ++ right.leafList // recursively collect leaves from both subtrees
+    }
+
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
   }
 
@@ -61,6 +67,7 @@ package binarytree {
     override def addValue[U: Ordering](x: U): Tree[U] = Node(x)
     override def nodeCount: Int = 0
     override def leafCount: Int = 0
+    override def leafList: List[Nothing] = Nil
     override def toString = "."
   }
 
@@ -198,5 +205,9 @@ package binarytree {
     println(Node('x', Node('x'), End).leafCount) // 1
     println(Node('a', Node('b'), Node('c')).leafCount) // 2
     println(tree.leafCount) // 3 (leaves are: d, e, g)
+
+    // P61A leafList
+    println(Node('a', Node('b'), Node('c', Node('d'), Node('e'))).leafList) // List(b, d, e)
+    println(tree.leafList) // List(d, e, g)
   }
 }
