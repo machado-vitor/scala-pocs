@@ -48,8 +48,8 @@ package binarytree {
     override def nodeCount: Int = 1 + left.nodeCount + right.nodeCount
 
     override def leafCount: Int = (left, right) match {
-      case (End, End) => 1
-      case _ => left.leafCount + right.leafCount
+      case (End, End) => 1 // this is a leaf (no successors)
+      case _ => left.leafCount + right.leafCount // recursively count leaves in subtrees
     }
 
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
