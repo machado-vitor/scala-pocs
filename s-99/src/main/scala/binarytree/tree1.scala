@@ -193,5 +193,10 @@ package binarytree {
     println(Tree.maxHbalHeight(4)) // 3
     Tree.hbalTreesWithNodes(4, "x").foreach(println)
     println(Tree.hbalTreesWithNodes(15, "x").size) // 1553
+
+    // P61 leafCount
+    println(Node('x', Node('x'), End).leafCount) // 1
+    println(Node('a', Node('b'), Node('c')).leafCount) // 2
+    println(tree.leafCount) // 3 (leaves are: d, e, g)
   }
 }
