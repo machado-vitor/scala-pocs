@@ -28,6 +28,7 @@ package binarytree {
     def isSymmetric: Boolean
     def addValue[U >: T: Ordering](x: U): Tree[U] // U must be a supertype of T
     def nodeCount: Int
+    def leafCount: Int
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] { // Node is used as covariant, it can only read these files, never write to them.
@@ -46,6 +47,11 @@ package binarytree {
 
     override def nodeCount: Int = 1 + left.nodeCount + right.nodeCount
 
+    override def leafCount: Int = (left, right) match {
+      case (End, End) => 1
+      case _ => left.leafCount + right.leafCount
+    }
+
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
   }
 
@@ -54,6 +60,7 @@ package binarytree {
     override def isSymmetric: Boolean = true
     override def addValue[U: Ordering](x: U): Tree[U] = Node(x)
     override def nodeCount: Int = 0
+    override def leafCount: Int = 0
     override def toString = "."
   }
 
