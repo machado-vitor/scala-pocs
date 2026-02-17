@@ -30,6 +30,7 @@ package binarytree {
     def nodeCount: Int
     def leafCount: Int
     def leafList: List[T]
+    def internalList: List[T]
   }
 
   case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] { // Node is used as covariant, it can only read these files, never write to them.
@@ -58,6 +59,11 @@ package binarytree {
       case _ => left.leafList ++ right.leafList // recursively collect leaves from both subtrees
     }
 
+    override def internalList: List[T] = (left, right) match {
+      case (End, End) => Nil // leaf node, not internal
+      case _ => List(value) ++ left.internalList ++ right.internalList
+    }
+
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
   }
 
@@ -68,6 +74,7 @@ package binarytree {
     override def nodeCount: Int = 0
     override def leafCount: Int = 0
     override def leafList: List[Nothing] = Nil
+    override def internalList: List[Nothing] = Nil
     override def toString = "."
   }
 
@@ -209,5 +216,8 @@ package binarytree {
     // P61A leafList
     println(Node('a', Node('b'), Node('c', Node('d'), Node('e'))).leafList) // List(b, d, e)
     println(tree.leafList) // List(d, e, g)
+
+    // P62 internalList
+    println(Node('a', Node('b'), Node('c', Node('d'), Node('e'))).internalList) // List(a, c)
   }
 }
