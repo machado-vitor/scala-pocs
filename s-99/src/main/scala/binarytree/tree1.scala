@@ -56,12 +56,12 @@ package binarytree {
 
     override def leafList: List[T] = (left, right) match {
       case (End, End) => List(value) // this is a leaf, return its value
-      case _ => left.leafList ++ right.leafList // recursively collect leaves from both subtrees
+      case _ => left.leafList ::: right.leafList // recursively collect leaves from both subtrees
     }
 
     override def internalList: List[T] = (left, right) match {
       case (End, End) => Nil // leaf node, not internal
-      case _ => List(value) ++ left.internalList ++ right.internalList
+      case _ => value :: left.internalList ::: right.internalList
     }
 
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
@@ -81,8 +81,7 @@ package binarytree {
   // P55
   object Tree {
     // this generates all combinations of valid left/right subtrees.
-    def cBalanced[T](n: Int, value: T): List[Tree[T]] = {
-      n match {
+    def cBalanced[T](n: Int, value: T): List[Tree[T]] = n match {
         case 0 => List(End)
         case _ =>
           val subtreeNodes = n - 1 // 1 node is the root, so we remove it, the rest go to children
@@ -102,7 +101,6 @@ package binarytree {
               right <- cBalanced(largerHalf, value)
               (l, r) <- List((left, right), (right, left)) // unbalanced subtrees, for n = 4 for example, generate both sides.
             } yield Node(value, l, r)
-      }
     }
 
     // P58 Symmetric + completely balanced trees with n nodes.
