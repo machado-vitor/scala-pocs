@@ -225,5 +225,8 @@ package binarytree {
 
     // P62 internalList
     println(Node('a', Node('b'), Node('c', Node('d'), Node('e'))).internalList) // List(a, c)
+
+    // P63 completeBinaryTree
+    println(Tree.completeBinaryTree(6, "x")) // T(x T(x T(x . .) T(x . .)) T(x T(x . .) .))
   }
 }
