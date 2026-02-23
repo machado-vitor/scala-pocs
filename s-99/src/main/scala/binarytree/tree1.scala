@@ -163,6 +163,8 @@ package binarytree {
     }
 
     // P63 Complete binary tree.
+    // Uses heap addressing: node at address a has children at 2*a and 2*a+1.
+    // A node exists if its address <= n.
     def completeBinaryTree[T](n: Int, value: T): Tree[T] = {
       def generate(addr: Int): Tree[T] =
         if (addr > n) End
