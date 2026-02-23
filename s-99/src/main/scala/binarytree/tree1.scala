@@ -162,6 +162,14 @@ package binarytree {
       }.toList
     }
 
+    // P63 Complete binary tree.
+    def completeBinaryTree[T](n: Int, value: T): Tree[T] = {
+      def generate(addr: Int): Tree[T] =
+        if (addr > n) End
+        else Node(value, generate(2 * addr), generate(2 * addr + 1))
+      generate(1)
+    }
+
     def fromList[T: Ordering](list: List[T]): Tree[T] =
       list.foldLeft(End: Tree[T])((tree, value) => tree.addValue(value))
   }
