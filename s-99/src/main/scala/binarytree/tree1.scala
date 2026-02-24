@@ -232,3 +232,15 @@ package binarytree {
     println(Tree.completeBinaryTree(6, "x")) // T(x T(x T(x . .) T(x . .)) T(x T(x . .) .))
   }
 }
+
+// Complete Binary Tree
+
+// What is an address?
+// it is a number we assign for each position in the three, going level by level, left to right.
+// like for example:
+//  Level 1:          1
+//                  /   \
+//  Level 2:       2     3
+//                / \   / \
+//  Level 3:     4   5 6   7
+// This is called levelorder numbering. The root gets 1, then we count left-to-right on each level.
