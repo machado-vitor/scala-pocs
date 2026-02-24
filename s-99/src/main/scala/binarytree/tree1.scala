@@ -244,3 +244,12 @@ package binarytree {
 //                / \   / \
 //  Level 3:     4   5 6   7
 // This is called levelorder numbering. The root gets 1, then we count left-to-right on each level.
+// -----------------------------------------------------------------------------------------------
+// Why 2*a and 2*a+1?
+// this is a mathematical property of this numbering.
+// Look at the pattern:
+//  Node 1 → children: 2, 3    (2*1, 2*1+1)
+//  Node 2 → children: 4, 5    (2*2, 2*2+1)
+//  Node 3 → children: 6, 7    (2*3, 2*3+1)
+//  Node 4 → children: 8, 9    (2*4, 2*4+1)
+// This is how Binary heaps (priority queues) stores a tree in a flat array.
