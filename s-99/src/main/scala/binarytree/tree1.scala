@@ -258,3 +258,7 @@ package binarytree {
 
 // Why does a node exist only if addr <= n?
 // because anything beyond n is a position that doesn't exist in out tree. the addresses are assigned sequentially from 1 to n
+
+// Why is the tree shaped like this?
+// The left-adjusted rule is what makes a complete binary tree special.
+// When the last level isn't full, all nodes pack to the left.
