@@ -33,7 +33,9 @@ package binarytree {
     def internalList: List[T]
   }
 
-  case class Node[+T](value: T, left: Tree[T] = End, right: Tree[T] = End) extends Tree[T] { // Node is used as covariant, it can only read these files, never write to them.
+  // Not a case class so that PositionedNode can extend it (case-to-case inheritance is prohibited in Scala 3).
+  // Companion object below provides apply/unapply to preserve the same construction and pattern matching syntax.
+  class Node[+T](val value: T, val left: Tree[T] = End, val right: Tree[T] = End) extends Tree[T] {
     override def isMirrorOf[V](tree: Tree[V]): Boolean = tree match { // V is invariant because it appears in a contravariant position (method parameter)
       case t: Node[V] => left.isMirrorOf(t.right) && right.isMirrorOf(t.left) // recursively check if left subtree mirrors the other's right AND right subtree mirrors the other's left
       case _ => false // if comparing against anything else (like End): return false.
@@ -65,6 +67,15 @@ package binarytree {
     }
 
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
+  }
+
+  object Node {
+    def apply[T](value: T, left: Tree[T] = End, right: Tree[T] = End): Node[T] = new Node(value, left, right)
+    def unapply[T](n: Node[T]): Some[(T, Tree[T], Tree[T])] = Some((n.value, n.left, n.right))
+  }
+
+  case class PositionedNode[+T](override val value: T, override val left: Tree[T], override val right: Tree[T], x: Int, y: Int) extends Node[T](value, left, right) {
+    override def toString: String = "T[" + x.toString + "," + y.toString + "](" + value.toString + " " + left.toString + " " + right.toString + ")"
   }
 
   case object End extends Tree[Nothing] {
