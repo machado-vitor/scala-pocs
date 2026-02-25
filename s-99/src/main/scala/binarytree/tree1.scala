@@ -31,6 +31,8 @@ package binarytree {
     def leafCount: Int
     def leafList: List[T]
     def internalList: List[T]
+    def layoutBinaryTree: Tree[T] = layoutBinaryTreeInternal(1, 1)._1
+    def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[T], Int)
   }
 
   // Not a case class so that PositionedNode can extend it (case-to-case inheritance is prohibited in Scala 3).
@@ -67,6 +69,12 @@ package binarytree {
     }
 
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
+
+    def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[T], Int) = {
+      val (leftTree, myX) = left.layoutBinaryTreeInternal(x, depth + 1)
+      val (rightTree, nextX) = right.layoutBinaryTreeInternal(myX + 1, depth + 1)
+      (PositionedNode(value, leftTree, rightTree, myX, depth), nextX)
+    }
   }
 
   object Node {
@@ -87,6 +95,7 @@ package binarytree {
     override def leafList: List[Nothing] = Nil
     override def internalList: List[Nothing] = Nil
     override def toString = "."
+    def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[Nothing], Int) = (End, x)
   }
 
   // P55
