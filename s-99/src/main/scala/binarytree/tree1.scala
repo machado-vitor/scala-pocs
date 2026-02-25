@@ -253,3 +253,8 @@ package binarytree {
 //  Node 3 → children: 6, 7    (2*3, 2*3+1)
 //  Node 4 → children: 8, 9    (2*4, 2*4+1)
 // This is how Binary heaps (priority queues) stores a tree in a flat array.
+// It works because each level has exactly twice as many positions as the previous one. Lvl 1 = 1, 2 = 2, 3 = 4...
+// So when we go down one level, addresses double, left child is 2*a and right child is 2*a+1.
+
+// Why does a node exist only if addr <= n?
+// because anything beyond n is a position that doesn't exist in out tree. the addresses are assigned sequentially from 1 to n
