@@ -250,6 +250,9 @@ package binarytree {
 
     // P63 completeBinaryTree
     println(Tree.completeBinaryTree(6, "x")) // T(x T(x T(x . .) T(x . .)) T(x T(x . .) .))
+
+    // P64
+    println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree)
   }
 }
 
