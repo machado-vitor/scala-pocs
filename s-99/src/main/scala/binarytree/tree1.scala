@@ -285,3 +285,27 @@ package binarytree {
 // Why is the tree shaped like this?
 // The left-adjusted rule is what makes a complete binary tree special.
 // When the last level isn't full, all nodes pack to the left.
+
+
+// layoutBinaryTree, explanation
+// The goal is to assign (x, y) coordinates to every node using inorder position for x and depth for y.
+// The leftmost node in inorder gets x=1, the next gets x=2, etc. Root is at depth 1.
+
+//Inorder is one of three classic ways to traverse (visit) a binary tree. The order is: left subtree
+//  → current node → right subtree.
+//
+//  The three traversals:
+//  - Preorder: current → left → right
+//  - Inorder: left → current → right
+//  - Postorder: left → right → current
+//
+//  Example:
+//          a
+//         / \
+//        b   d
+//         \
+//          c
+//
+//  - Preorder: a, b, c, d
+//  - Inorder: b, c, a, d
+//  - Postorder: c, b, d, a
