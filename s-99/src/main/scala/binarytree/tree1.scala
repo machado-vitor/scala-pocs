@@ -70,10 +70,10 @@ package binarytree {
 
     override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
 
-    def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[T], Int) = {
-      val (leftTree, myX) = left.layoutBinaryTreeInternal(x, depth + 1)
-      val (rightTree, nextX) = right.layoutBinaryTreeInternal(myX + 1, depth + 1)
-      (PositionedNode(value, leftTree, rightTree, myX, depth), nextX)
+    def layoutBinaryTreeInternal(x: Int, y: Int): (Tree[T], Int) = {
+      val (leftTree, myX) = left.layoutBinaryTreeInternal(x, y + 1)
+      val (rightTree, nextX) = right.layoutBinaryTreeInternal(myX + 1, y + 1)
+      (PositionedNode(value, leftTree, rightTree, myX, y), nextX)
     }
   }
 
