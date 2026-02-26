@@ -253,6 +253,12 @@ package binarytree {
 
     // P64
     println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree)
+    // Visually, x is the column and y is the row (depth):
+    //
+    //      x: 1  2  3  4
+    //  y: 1         a
+    //  y: 2   b        d
+    //  y: 3      c
   }
 }
 
