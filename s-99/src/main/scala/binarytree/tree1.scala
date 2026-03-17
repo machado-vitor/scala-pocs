@@ -33,6 +33,19 @@ package binarytree {
     def internalList: List[T]
     def layoutBinaryTree: Tree[T] = layoutBinaryTreeInternal(1, 1)._1
     def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[T], Int)
+    def treeDepth: Int
+    def layoutBinaryTree2: Tree[T] = {
+      val d = treeDepth
+      val initSep = if (d <= 1) 0 else 1 << (d - 2) // 2^(d-2): separation at root level
+      // Walk left spine to find how far left the tree extends from the root
+      def leftOffset(tree: Tree[?], sep: Int): Int = tree match {
+        case Node(_, l @ Node(_, _, _), _) => -sep + leftOffset(l, sep / 2)
+        case _ => 0
+      }
+      val rootX = 1 - leftOffset(this, initSep) // shift so leftmost node lands at x=1
+      layoutBinaryTree2Internal(rootX, 1, initSep)
+    }
+    def layoutBinaryTree2Internal(x: Int, y: Int, sep: Int): Tree[T]
   }
 
   // Not a case class so that PositionedNode can extend it (case-to-case inheritance is prohibited in Scala 3).
@@ -75,6 +88,14 @@ package binarytree {
       val (rightTree, nextX) = right.layoutBinaryTreeInternal(myX + 1, y + 1)
       (PositionedNode(value, leftTree, rightTree, myX, y), nextX)
     }
+
+    override def treeDepth: Int = 1 + math.max(left.treeDepth, right.treeDepth)
+
+    override def layoutBinaryTree2Internal(x: Int, y: Int, sep: Int): Tree[T] = {
+      val leftTree = left.layoutBinaryTree2Internal(x - sep, y + 1, sep / 2)
+      val rightTree = right.layoutBinaryTree2Internal(x + sep, y + 1, sep / 2)
+      PositionedNode(value, leftTree, rightTree, x, y)
+    }
   }
 
   object Node {
@@ -96,6 +117,8 @@ package binarytree {
     override def internalList: List[Nothing] = Nil
     override def toString = "."
     def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[Nothing], Int) = (End, x)
+    override def treeDepth: Int = 0
+    def layoutBinaryTree2Internal(x: Int, y: Int, sep: Int): Tree[Nothing] = End
   }
 
   // P55
