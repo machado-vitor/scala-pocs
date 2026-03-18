@@ -119,7 +119,7 @@ package binarytree {
     override def toString = "."
     def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[Nothing], Int) = (End, x)
     override def treeDepth: Int = 0
-    def layoutBinaryTree2Internal(x: Int, y: Int, sep: Int): Tree[Nothing] = End
+    def layoutBinaryTree2Internal(x: Int, depth: Int, separation: Int): Tree[Nothing] = End
   }
 
   // P55
