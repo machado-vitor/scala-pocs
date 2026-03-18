@@ -1,0 +1,261 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" font-family="Menlo, Monaco, monospace">
+  <style>
+    .node-circle { fill: #4A90D9; stroke: #2C5F8A; stroke-width: 2; }
+    .node-label { fill: white; font-size: 14px; font-weight: bold; text-anchor: middle; dominant-baseline: central; }
+    .edge { stroke: #666; stroke-width: 2; fill: none; }
+    .grid-dot { fill: #DDD; }
+    .level-label { fill: #999; font-size: 11px; text-anchor: end; dominant-baseline: central; }
+    .x-label { fill: #999; font-size: 10px; text-anchor: middle; dominant-baseline: central; }
+    .sep-label { fill: #E07040; font-size: 11px; text-anchor: start; dominant-baseline: central; font-style: italic; }
+    .title { fill: #333; font-size: 16px; font-weight: bold; text-anchor: middle; }
+    .subtitle { fill: #777; font-size: 12px; text-anchor: middle; }
+  </style>
+
+  <!-- Title -->
+  <text x="410" y="25" class="title">P65 — layoutBinaryTree2</text>
+  <text x="410" y="45" class="subtitle">Tree.fromList(List('n','k','m','c','a','e','d','g','u','p','q'))  —  maxDepth = 5</text>
+
+  <!-- Grid and layout constants: offsetX=60, offsetY=70, cellW=32, cellH=65 -->
+  <!-- x positions 1..23, y positions 1..5 -->
+
+  <!-- X-axis labels -->
+  <text x="92" y="67" class="x-label">1</text>
+  <text x="124" y="67" class="x-label">2</text>
+  <text x="156" y="67" class="x-label">3</text>
+  <text x="188" y="67" class="x-label">4</text>
+  <text x="220" y="67" class="x-label">5</text>
+  <text x="252" y="67" class="x-label">6</text>
+  <text x="284" y="67" class="x-label">7</text>
+  <text x="316" y="67" class="x-label">8</text>
+  <text x="348" y="67" class="x-label">9</text>
+  <text x="380" y="67" class="x-label">10</text>
+  <text x="412" y="67" class="x-label">11</text>
+  <text x="444" y="67" class="x-label">12</text>
+  <text x="476" y="67" class="x-label">13</text>
+  <text x="508" y="67" class="x-label">14</text>
+  <text x="540" y="67" class="x-label">15</text>
+  <text x="572" y="67" class="x-label">16</text>
+  <text x="604" y="67" class="x-label">17</text>
+  <text x="636" y="67" class="x-label">18</text>
+  <text x="668" y="67" class="x-label">19</text>
+  <text x="700" y="67" class="x-label">20</text>
+  <text x="732" y="67" class="x-label">21</text>
+  <text x="764" y="67" class="x-label">22</text>
+  <text x="796" y="67" class="x-label">23</text>
+
+  <!-- Level labels (left side) -->
+  <text x="72" y="85" class="level-label">y=1</text>
+  <text x="72" y="150" class="level-label">y=2</text>
+  <text x="72" y="215" class="level-label">y=3</text>
+  <text x="72" y="280" class="level-label">y=4</text>
+  <text x="72" y="345" class="level-label">y=5</text>
+
+  <!-- Separation labels (right side) -->
+  <text x="810" y="85" class="sep-label" font-size="10">sep=8</text>
+  <text x="810" y="150" class="sep-label" font-size="10">sep=4</text>
+  <text x="810" y="215" class="sep-label" font-size="10">sep=2</text>
+  <text x="810" y="280" class="sep-label" font-size="10">sep=1</text>
+
+  <!-- Grid dots for empty slots -->
+  <!-- Level 1: all except 15 -->
+  <circle cx="92"  cy="85" r="2" class="grid-dot"/>
+  <circle cx="124" cy="85" r="2" class="grid-dot"/>
+  <circle cx="156" cy="85" r="2" class="grid-dot"/>
+  <circle cx="188" cy="85" r="2" class="grid-dot"/>
+  <circle cx="220" cy="85" r="2" class="grid-dot"/>
+  <circle cx="252" cy="85" r="2" class="grid-dot"/>
+  <circle cx="284" cy="85" r="2" class="grid-dot"/>
+  <circle cx="316" cy="85" r="2" class="grid-dot"/>
+  <circle cx="348" cy="85" r="2" class="grid-dot"/>
+  <circle cx="380" cy="85" r="2" class="grid-dot"/>
+  <circle cx="412" cy="85" r="2" class="grid-dot"/>
+  <circle cx="444" cy="85" r="2" class="grid-dot"/>
+  <circle cx="476" cy="85" r="2" class="grid-dot"/>
+  <circle cx="508" cy="85" r="2" class="grid-dot"/>
+  <circle cx="572" cy="85" r="2" class="grid-dot"/>
+  <circle cx="604" cy="85" r="2" class="grid-dot"/>
+  <circle cx="636" cy="85" r="2" class="grid-dot"/>
+  <circle cx="668" cy="85" r="2" class="grid-dot"/>
+  <circle cx="700" cy="85" r="2" class="grid-dot"/>
+  <circle cx="732" cy="85" r="2" class="grid-dot"/>
+  <circle cx="764" cy="85" r="2" class="grid-dot"/>
+  <circle cx="796" cy="85" r="2" class="grid-dot"/>
+
+  <!-- Level 2: all except 7, 23 -->
+  <circle cx="92"  cy="150" r="2" class="grid-dot"/>
+  <circle cx="124" cy="150" r="2" class="grid-dot"/>
+  <circle cx="156" cy="150" r="2" class="grid-dot"/>
+  <circle cx="188" cy="150" r="2" class="grid-dot"/>
+  <circle cx="220" cy="150" r="2" class="grid-dot"/>
+  <circle cx="252" cy="150" r="2" class="grid-dot"/>
+  <circle cx="316" cy="150" r="2" class="grid-dot"/>
+  <circle cx="348" cy="150" r="2" class="grid-dot"/>
+  <circle cx="380" cy="150" r="2" class="grid-dot"/>
+  <circle cx="412" cy="150" r="2" class="grid-dot"/>
+  <circle cx="444" cy="150" r="2" class="grid-dot"/>
+  <circle cx="476" cy="150" r="2" class="grid-dot"/>
+  <circle cx="508" cy="150" r="2" class="grid-dot"/>
+  <circle cx="540" cy="150" r="2" class="grid-dot"/>
+  <circle cx="572" cy="150" r="2" class="grid-dot"/>
+  <circle cx="604" cy="150" r="2" class="grid-dot"/>
+  <circle cx="636" cy="150" r="2" class="grid-dot"/>
+  <circle cx="668" cy="150" r="2" class="grid-dot"/>
+  <circle cx="700" cy="150" r="2" class="grid-dot"/>
+  <circle cx="732" cy="150" r="2" class="grid-dot"/>
+  <circle cx="764" cy="150" r="2" class="grid-dot"/>
+
+  <!-- Level 3: all except 3, 11, 19 -->
+  <circle cx="92"  cy="215" r="2" class="grid-dot"/>
+  <circle cx="124" cy="215" r="2" class="grid-dot"/>
+  <circle cx="188" cy="215" r="2" class="grid-dot"/>
+  <circle cx="220" cy="215" r="2" class="grid-dot"/>
+  <circle cx="252" cy="215" r="2" class="grid-dot"/>
+  <circle cx="284" cy="215" r="2" class="grid-dot"/>
+  <circle cx="316" cy="215" r="2" class="grid-dot"/>
+  <circle cx="348" cy="215" r="2" class="grid-dot"/>
+  <circle cx="380" cy="215" r="2" class="grid-dot"/>
+  <circle cx="444" cy="215" r="2" class="grid-dot"/>
+  <circle cx="476" cy="215" r="2" class="grid-dot"/>
+  <circle cx="508" cy="215" r="2" class="grid-dot"/>
+  <circle cx="540" cy="215" r="2" class="grid-dot"/>
+  <circle cx="572" cy="215" r="2" class="grid-dot"/>
+  <circle cx="604" cy="215" r="2" class="grid-dot"/>
+  <circle cx="636" cy="215" r="2" class="grid-dot"/>
+  <circle cx="700" cy="215" r="2" class="grid-dot"/>
+  <circle cx="732" cy="215" r="2" class="grid-dot"/>
+  <circle cx="764" cy="215" r="2" class="grid-dot"/>
+  <circle cx="796" cy="215" r="2" class="grid-dot"/>
+
+  <!-- Level 4: all except 1, 5, 21 -->
+  <circle cx="124" cy="280" r="2" class="grid-dot"/>
+  <circle cx="156" cy="280" r="2" class="grid-dot"/>
+  <circle cx="188" cy="280" r="2" class="grid-dot"/>
+  <circle cx="252" cy="280" r="2" class="grid-dot"/>
+  <circle cx="284" cy="280" r="2" class="grid-dot"/>
+  <circle cx="316" cy="280" r="2" class="grid-dot"/>
+  <circle cx="348" cy="280" r="2" class="grid-dot"/>
+  <circle cx="380" cy="280" r="2" class="grid-dot"/>
+  <circle cx="412" cy="280" r="2" class="grid-dot"/>
+  <circle cx="444" cy="280" r="2" class="grid-dot"/>
+  <circle cx="476" cy="280" r="2" class="grid-dot"/>
+  <circle cx="508" cy="280" r="2" class="grid-dot"/>
+  <circle cx="540" cy="280" r="2" class="grid-dot"/>
+  <circle cx="572" cy="280" r="2" class="grid-dot"/>
+  <circle cx="604" cy="280" r="2" class="grid-dot"/>
+  <circle cx="636" cy="280" r="2" class="grid-dot"/>
+  <circle cx="668" cy="280" r="2" class="grid-dot"/>
+  <circle cx="700" cy="280" r="2" class="grid-dot"/>
+  <circle cx="764" cy="280" r="2" class="grid-dot"/>
+  <circle cx="796" cy="280" r="2" class="grid-dot"/>
+
+  <!-- Level 5: all except 4, 6 -->
+  <circle cx="92"  cy="345" r="2" class="grid-dot"/>
+  <circle cx="124" cy="345" r="2" class="grid-dot"/>
+  <circle cx="156" cy="345" r="2" class="grid-dot"/>
+  <circle cx="220" cy="345" r="2" class="grid-dot"/>
+  <circle cx="284" cy="345" r="2" class="grid-dot"/>
+  <circle cx="316" cy="345" r="2" class="grid-dot"/>
+  <circle cx="348" cy="345" r="2" class="grid-dot"/>
+  <circle cx="380" cy="345" r="2" class="grid-dot"/>
+  <circle cx="412" cy="345" r="2" class="grid-dot"/>
+  <circle cx="444" cy="345" r="2" class="grid-dot"/>
+  <circle cx="476" cy="345" r="2" class="grid-dot"/>
+  <circle cx="508" cy="345" r="2" class="grid-dot"/>
+  <circle cx="540" cy="345" r="2" class="grid-dot"/>
+  <circle cx="572" cy="345" r="2" class="grid-dot"/>
+  <circle cx="604" cy="345" r="2" class="grid-dot"/>
+  <circle cx="636" cy="345" r="2" class="grid-dot"/>
+  <circle cx="668" cy="345" r="2" class="grid-dot"/>
+  <circle cx="700" cy="345" r="2" class="grid-dot"/>
+  <circle cx="732" cy="345" r="2" class="grid-dot"/>
+  <circle cx="764" cy="345" r="2" class="grid-dot"/>
+  <circle cx="796" cy="345" r="2" class="grid-dot"/>
+
+  <!-- Edges (drawn before nodes so nodes appear on top) -->
+  <!-- n(15,1) -> k(7,2) -->
+  <line x1="540" y1="85" x2="284" y2="150" class="edge"/>
+  <!-- n(15,1) -> u(23,2) -->
+  <line x1="540" y1="85" x2="796" y2="150" class="edge"/>
+  <!-- k(7,2) -> c(3,3) -->
+  <line x1="284" y1="150" x2="156" y2="215" class="edge"/>
+  <!-- k(7,2) -> m(11,3) -->
+  <line x1="284" y1="150" x2="412" y2="215" class="edge"/>
+  <!-- c(3,3) -> a(1,4) -->
+  <line x1="156" y1="215" x2="92" y2="280" class="edge"/>
+  <!-- c(3,3) -> e(5,4) -->
+  <line x1="156" y1="215" x2="220" y2="280" class="edge"/>
+  <!-- u(23,2) -> p(19,3) -->
+  <line x1="796" y1="150" x2="668" y2="215" class="edge"/>
+  <!-- p(19,3) -> q(21,4) -->
+  <line x1="668" y1="215" x2="732" y2="280" class="edge"/>
+  <!-- e(5,4) -> d(4,5) -->
+  <line x1="220" y1="280" x2="188" y2="345" class="edge"/>
+  <!-- e(5,4) -> g(6,5) -->
+  <line x1="220" y1="280" x2="252" y2="345" class="edge"/>
+
+  <!-- Nodes -->
+  <!-- n at (15, 1) → pixel (540, 85) -->
+  <circle cx="540" cy="85" r="15" class="node-circle"/>
+  <text x="540" y="85" class="node-label">n</text>
+
+  <!-- k at (7, 2) → pixel (284, 150) -->
+  <circle cx="284" cy="150" r="15" class="node-circle"/>
+  <text x="284" y="150" class="node-label">k</text>
+
+  <!-- u at (23, 2) → pixel (796, 150) -->
+  <circle cx="796" cy="150" r="15" class="node-circle"/>
+  <text x="796" y="150" class="node-label">u</text>
+
+  <!-- c at (3, 3) → pixel (156, 215) -->
+  <circle cx="156" cy="215" r="15" class="node-circle"/>
+  <text x="156" y="215" class="node-label">c</text>
+
+  <!-- m at (11, 3) → pixel (412, 215) -->
+  <circle cx="412" cy="215" r="15" class="node-circle"/>
+  <text x="412" y="215" class="node-label">m</text>
+
+  <!-- p at (19, 3) → pixel (668, 215) -->
+  <circle cx="668" cy="215" r="15" class="node-circle"/>
+  <text x="668" y="215" class="node-label">p</text>
+
+  <!-- a at (1, 4) → pixel (92, 280) -->
+  <circle cx="92" cy="280" r="15" class="node-circle"/>
+  <text x="92" y="280" class="node-label">a</text>
+
+  <!-- e at (5, 4) → pixel (220, 280) -->
+  <circle cx="220" cy="280" r="15" class="node-circle"/>
+  <text x="220" y="280" class="node-label">e</text>
+
+  <!-- q at (21, 4) → pixel (732, 280) -->
+  <circle cx="732" cy="280" r="15" class="node-circle"/>
+  <text x="732" y="280" class="node-label">q</text>
+
+  <!-- d at (4, 5) → pixel (188, 345) -->
+  <circle cx="188" cy="345" r="15" class="node-circle"/>
+  <text x="188" y="345" class="node-label">d</text>
+
+  <!-- g at (6, 5) → pixel (252, 345) -->
+  <circle cx="252" cy="345" r="15" class="node-circle"/>
+  <text x="252" y="345" class="node-label">g</text>
+
+  <!-- Coordinate labels under each node -->
+  <text x="540" y="108" class="x-label" fill="#2C5F8A" font-size="9">[15,1]</text>
+  <text x="284" y="173" class="x-label" fill="#2C5F8A" font-size="9">[7,2]</text>
+  <text x="796" y="173" class="x-label" fill="#2C5F8A" font-size="9">[23,2]</text>
+  <text x="156" y="238" class="x-label" fill="#2C5F8A" font-size="9">[3,3]</text>
+  <text x="412" y="238" class="x-label" fill="#2C5F8A" font-size="9">[11,3]</text>
+  <text x="668" y="238" class="x-label" fill="#2C5F8A" font-size="9">[19,3]</text>
+  <text x="92"  y="303" class="x-label" fill="#2C5F8A" font-size="9">[1,4]</text>
+  <text x="220" y="303" class="x-label" fill="#2C5F8A" font-size="9">[5,4]</text>
+  <text x="732" y="303" class="x-label" fill="#2C5F8A" font-size="9">[21,4]</text>
+  <text x="188" y="368" class="x-label" fill="#2C5F8A" font-size="9">[4,5]</text>
+  <text x="252" y="368" class="x-label" fill="#2C5F8A" font-size="9">[6,5]</text>
+
+  <!-- Legend -->
+  <rect x="20" y="388" width="800" height="25" rx="4" fill="#F5F5F5" stroke="#DDD"/>
+  <circle cx="40" cy="400" r="3" class="grid-dot"/>
+  <text x="50" y="400" font-size="10" fill="#999" dominant-baseline="central">empty slot</text>
+  <circle cx="140" cy="400" r="6" class="node-circle"/>
+  <text x="152" y="400" font-size="10" fill="#666" dominant-baseline="central">node [x,y]</text>
+  <text x="280" y="400" font-size="10" fill="#E07040" dominant-baseline="central" font-style="italic">sep = parent-to-child distance at that level</text>
+</svg>
