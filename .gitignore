@@ -6,3 +6,6 @@
 target/
 project/target/
 project/project/
+.claude/
+.scala-build/
+*.log
