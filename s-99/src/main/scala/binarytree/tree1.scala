@@ -47,6 +47,15 @@ package binarytree {
       layoutBinaryTree2Internal(rootX, 1, rootSeparation)
     }
     def layoutBinaryTree2Internal(x: Int, depth: Int, separation: Int): Tree[T]
+    // P66: compact layout using contour-based subtree packing.
+    // Returns (leftContour, rightContour, buildFn) where contours are lists of x-offsets
+    // at each depth relative to the subtree root, and buildFn(absoluteX, depth) produces the positioned tree.
+    def layoutBinaryTree3Compute: (List[Int], List[Int], (Int, Int) => Tree[T])
+    def layoutBinaryTree3: Tree[T] = {
+      val (leftContour, _, buildPositionedTree) = layoutBinaryTree3Compute
+      val rootX = if (leftContour.isEmpty) 1 else 1 - leftContour.min
+      buildPositionedTree(rootX, 1)
+    }
   }
 
   // Not a case class so that PositionedNode can extend it (case-to-case inheritance is prohibited in Scala 3).
@@ -97,6 +106,35 @@ package binarytree {
       val rightTree = right.layoutBinaryTree2Internal(x + separation, depth + 1, separation / 2)
       PositionedNode(value, leftTree, rightTree, x, depth)
     }
+
+    override def layoutBinaryTree3Compute: (List[Int], List[Int], (Int, Int) => Tree[T]) = {
+      val (leftContourL, rightContourL, buildLeft) = left.layoutBinaryTree3Compute
+      val (leftContourR, rightContourR, buildRight) = right.layoutBinaryTree3Compute
+
+      // s = distance from this node to each child (left at -s, right at +s)
+      val s = (left, right) match {
+        case (End, End) => 0 // leaf, no children
+        case (_, End)   => 1 // only left child
+        case (End, _)   => 1 // only right child
+        case _ =>
+          val maxOverlap = rightContourL.zip(leftContourR).map { case (r, l) => r - l }.max
+          math.max(1, (maxOverlap + 2) / 2)
+      }
+
+      def mergePreferFirst(preferred: List[Int], other: List[Int]): List[Int] = (preferred, other) match {
+        case (Nil, rest)         => rest
+        case (h :: t, _ :: rest) => h :: mergePreferFirst(t, rest)
+        case (h :: t, Nil)       => h :: mergePreferFirst(t, Nil)
+      }
+
+      val newLeftContour = 0 :: mergePreferFirst(leftContourL.map(_ - s), leftContourR.map(_ + s))
+      val newRightContour = 0 :: mergePreferFirst(rightContourR.map(_ + s), rightContourL.map(_ - s))
+
+      val buildFn = (x: Int, depth: Int) =>
+        PositionedNode(value, buildLeft(x - s, depth + 1), buildRight(x + s, depth + 1), x, depth)
+
+      (newLeftContour, newRightContour, buildFn)
+    }
   }
 
   object Node {
@@ -120,6 +158,8 @@ package binarytree {
     def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[Nothing], Int) = (End, x)
     override def treeDepth: Int = 0
     def layoutBinaryTree2Internal(x: Int, depth: Int, separation: Int): Tree[Nothing] = End
+    def layoutBinaryTree3Compute: (List[Int], List[Int], (Int, Int) => Tree[Nothing]) =
+      (Nil, Nil, (_, _) => End)
   }
 
   // P55
@@ -288,6 +328,11 @@ package binarytree {
     println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree2)
     // T[3,1]('a T[1,2]('b . T[2,3]('c . .)) T[5,2]('d . .))
     println(Tree.fromList(List('n', 'k', 'm', 'c', 'a', 'e', 'd', 'g', 'u', 'p', 'q')).layoutBinaryTree2)
+
+    // P66
+    println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree3)
+    // T[2,1]('a T[1,2]('b . T[2,3]('c . .)) T[3,2]('d . .))
+    println(Tree.fromList(List('n', 'k', 'm', 'c', 'a', 'e', 'd', 'g', 'u', 'p', 'q')).layoutBinaryTree3)
   }
 }
 
