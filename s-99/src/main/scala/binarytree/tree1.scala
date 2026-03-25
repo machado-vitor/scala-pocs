@@ -328,6 +328,14 @@ package binarytree {
     println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree2)
     // T[3,1]('a T[1,2]('b . T[2,3]('c . .)) T[5,2]('d . .))
     println(Tree.fromList(List('n', 'k', 'm', 'c', 'a', 'e', 'd', 'g', 'u', 'p', 'q')).layoutBinaryTree2)
+    // Visually (width = 23, fixed geometric spacing that doubles per level):
+    //
+    //      x: 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+    //  y: 1                                                  n
+    //  y: 2                     k                                               u
+    //  y: 3            c                    m                          p
+    //  y: 4      a                    e                                      q
+    //  y: 5                  d     g
 
     // P66
     println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree3)
