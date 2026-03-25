@@ -341,6 +341,14 @@ package binarytree {
     println(Node('a', Node('b', End, Node('c')), Node('d')).layoutBinaryTree3)
     // T[2,1]('a T[1,2]('b . T[2,3]('c . .)) T[3,2]('d . .))
     println(Tree.fromList(List('n', 'k', 'm', 'c', 'a', 'e', 'd', 'g', 'u', 'p', 'q')).layoutBinaryTree3)
+    // Visually (width = 7, compact layout packing subtrees as tightly as possible):
+    //
+    //      x: 1  2  3  4  5  6  7
+    //  y: 1               n
+    //  y: 2         k           u
+    //  y: 3      c     m     p
+    //  y: 4   a     e           q
+    //  y: 5      d     g
   }
 }
 
