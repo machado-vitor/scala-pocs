@@ -91,7 +91,11 @@ package binarytree {
       case _ => value :: left.internalList ::: right.internalList
     }
 
-    override def toString: String = s"T(${value.toString} ${left.toString} ${right.toString})"
+    // P67: string representation like a(b(d,e),c(,f(g,)))
+    override def toString: String = (left, right) match {
+      case (End, End) => value.toString
+      case _          => s"${value.toString}(${left.toString},${right.toString})"
+    }
 
     def layoutBinaryTreeInternal(x: Int, y: Int): (Tree[T], Int) = {
       val (leftTree, myX) = left.layoutBinaryTreeInternal(x, y + 1)
@@ -154,7 +158,7 @@ package binarytree {
     override def leafCount: Int = 0
     override def leafList: List[Nothing] = Nil
     override def internalList: List[Nothing] = Nil
-    override def toString = "."
+    override def toString = ""
     def layoutBinaryTreeInternal(x: Int, depth: Int): (Tree[Nothing], Int) = (End, x)
     override def treeDepth: Int = 0
     def layoutBinaryTree2Internal(x: Int, depth: Int, separation: Int): Tree[Nothing] = End
@@ -258,6 +262,28 @@ package binarytree {
 
     def fromList[T: Ordering](list: List[T]): Tree[T] =
       list.foldLeft(End: Tree[T])((tree, value) => tree.addValue(value))
+
+    // P67: parse string representation like "a(b(d,e),c(,f(g,)))" back into a Tree.
+    def fromString(s: String): Tree[Char] = {
+      def parse(pos: Int): (Tree[Char], Int) = {
+        if (pos >= s.length || s(pos) == ',' || s(pos) == ')') (End, pos)
+        else {
+          val value = s(pos)
+          if (pos + 1 < s.length && s(pos + 1) == '(') {
+            // node with children: value(left,right)
+            val (left, afterLeft) = parse(pos + 2) // skip value and '('
+            // afterLeft should point to ','
+            val (right, afterRight) = parse(afterLeft + 1) // skip ','
+            // afterRight should point to ')'
+            (Node(value, left, right), afterRight + 1) // skip ')'
+          } else {
+            // leaf node: just a single character
+            (Node(value), pos + 1)
+          }
+        }
+      }
+      if (s.isEmpty) End else parse(0)._1
+    }
   }
 
   object Tree1 extends App {
@@ -349,6 +375,12 @@ package binarytree {
     //  y: 3      c     m     p
     //  y: 4   a     e           q
     //  y: 5      d     g
+
+    // P67
+    println(Node('a', Node('b', Node('d'), Node('e')), Node('c', End, Node('f', Node('g'), End))).toString)
+    // a(b(d,e),c(,f(g,)))
+    println(Tree.fromString("a(b(d,e),c(,f(g,)))"))
+    // a(b(d,e),c(,f(g,)))
   }
 }
 
