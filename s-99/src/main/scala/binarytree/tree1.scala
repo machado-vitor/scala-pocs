@@ -391,6 +391,13 @@ package binarytree {
     // a(b(d,e),c(,f(g,)))
     println(Tree.fromString("a(b(d,e),c(,f(g,)))"))
     // a(b(d,e),c(,f(g,)))
+
+    // P68a
+    println(Tree.fromString("a(b(d,e),c(,f(g,)))").preorder)
+    // List(a, b, d, e, c, f, g)
+    println(Tree.fromString("a(b(d,e),c(,f(g,)))").inorder)
+    // List(d, b, e, a, c, g, f)
+
   }
 }
 
