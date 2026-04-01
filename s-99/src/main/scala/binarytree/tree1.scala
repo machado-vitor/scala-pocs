@@ -50,6 +50,9 @@ package binarytree {
     // P66: compact layout using contour-based subtree packing.
     // Returns (leftContour, rightContour, buildFn) where contours are lists of x-offsets
     // at each depth relative to the subtree root, and buildFn(absoluteX, depth) produces the positioned tree.
+    // P68a
+    def preorder: List[T]
+    def inorder: List[T]
     def layoutBinaryTree3Compute: (List[Int], List[Int], (Int, Int) => Tree[T])
     def layoutBinaryTree3: Tree[T] = {
       val (leftContour, _, buildPositionedTree) = layoutBinaryTree3Compute
@@ -139,6 +142,11 @@ package binarytree {
 
       (newLeftContour, newRightContour, buildFn)
     }
+
+    // P68a: root, then left subtree, then right subtree
+    override def preorder: List[T] = value :: left.preorder ::: right.preorder
+    // P68a: left subtree, then root, then right subtree
+    override def inorder: List[T] = left.inorder ::: (value :: right.inorder)
   }
 
   object Node {
@@ -164,6 +172,8 @@ package binarytree {
     def layoutBinaryTree2Internal(x: Int, depth: Int, separation: Int): Tree[Nothing] = End
     def layoutBinaryTree3Compute: (List[Int], List[Int], (Int, Int) => Tree[Nothing]) =
       (Nil, Nil, (_, _) => End)
+    def preorder: List[Nothing] = Nil
+    def inorder: List[Nothing] = Nil
   }
 
   // P55
@@ -266,7 +276,7 @@ package binarytree {
     // P67: parse string representation like "a(b(d,e),c(,f(g,)))" back into a Tree.
     def fromString(s: String): Tree[Char] = {
       def parse(pos: Int): (Tree[Char], Int) = {
-        if (pos >= s.length || s(pos) == ',' || s(pos) == ')') (End, pos)
+        if (pos >= s.length || s(pos) == ',' || s(pos) == ')') (End, pos) // empty subtree
         else {
           val value = s(pos)
           if (pos + 1 < s.length && s(pos + 1) == '(') {
