@@ -294,6 +294,17 @@ package binarytree {
       }
       if (s.isEmpty) End else parse(0)._1
     }
+
+    // P68b: reconstruct a tree from its preorder and inorder sequences.
+    // The first element of preorder is always the root.
+    // Find that root in inorder — everything to its left is the left subtree, everything to its right is the right subtree.
+    def preInTree[T](pre: List[T], in: List[T]): Tree[T] = pre match {
+      case Nil => End
+      case root :: preTail =>
+        val (inLeft, _ :: inRight) = in.span(_ != root): @unchecked
+        val (preLeft, preRight) = preTail.splitAt(inLeft.length)
+        Node(root, preInTree(preLeft, inLeft), preInTree(preRight, inRight))
+    }
   }
 
   object Tree1 extends App {
@@ -398,6 +409,11 @@ package binarytree {
     println(Tree.fromString("a(b(d,e),c(,f(g,)))").inorder)
     // List(d, b, e, a, c, g, f)
 
+    // P68b
+    println(Tree.preInTree(List('a', 'b', 'd', 'e', 'c', 'f', 'g'), List('d', 'b', 'e', 'a', 'c', 'g', 'f')))
+    // a(b(d,e),c(,f(g,)))
+    println(Tree.preInTree(List('a', 'b', 'a'), List('b', 'a', 'a')))
+    // a(b,a)
   }
 }
 
