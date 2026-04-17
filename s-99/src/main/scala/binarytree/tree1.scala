@@ -53,6 +53,8 @@ package binarytree {
     // P68a
     def preorder: List[T]
     def inorder: List[T]
+    // P69
+    def toDotstring: String
     def layoutBinaryTree3Compute: (List[Int], List[Int], (Int, Int) => Tree[T])
     def layoutBinaryTree3: Tree[T] = {
       val (leftContour, _, buildPositionedTree) = layoutBinaryTree3Compute
@@ -147,6 +149,8 @@ package binarytree {
     override def preorder: List[T] = value :: left.preorder ::: right.preorder
     // P68a: left subtree, then root, then right subtree
     override def inorder: List[T] = left.inorder ::: (value :: right.inorder)
+    // P69: preorder traversal with dots for empty subtrees
+    override def toDotstring: String = value.toString + left.toDotstring + right.toDotstring
   }
 
   object Node {
@@ -174,6 +178,7 @@ package binarytree {
       (Nil, Nil, (_, _) => End)
     def preorder: List[Nothing] = Nil
     def inorder: List[Nothing] = Nil
+    def toDotstring: String = "."
   }
 
   // P55
@@ -295,6 +300,21 @@ package binarytree {
       if (s.isEmpty) End else parse(0)._1
     }
 
+    // P69: reconstruct a tree from its dotstring representation.
+    // Each non-dot character is a node; dots represent empty subtrees (End).
+    def fromDotstring(ds: String): Tree[Char] = {
+      def parse(pos: Int): (Tree[Char], Int) = {
+        if (pos >= ds.length || ds(pos) == '.') (End, pos + 1)
+        else {
+          val value = ds(pos)
+          val (left, afterLeft) = parse(pos + 1)
+          val (right, afterRight) = parse(afterLeft)
+          (Node(value, left, right), afterRight)
+        }
+      }
+      if (ds.isEmpty) End else parse(0)._1
+    }
+
     // P68b: reconstruct a tree from its preorder and inorder sequences.
     // The first element of preorder is always the root.
     // Find that root in inorder — everything to its left is the left subtree, everything to its right is the right subtree.
@@ -414,6 +434,12 @@ package binarytree {
     // a(b(d,e),c(,f(g,)))
     println(Tree.preInTree(List('a', 'b', 'a'), List('b', 'a', 'a')))
     // a(b,a)
+
+    // P69
+    println(Tree.fromString("a(b(d,e),c(,f(g,)))").toDotstring)
+    // abd..e..c.fg...
+    println(Tree.fromDotstring("abd..e..c.fg..."))
+    // a(b(d,e),c(,f(g,)))
   }
 }
 
