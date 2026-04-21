@@ -5,6 +5,9 @@ package multiwaytree {
   case class MTree[+T](value: T, children: List[MTree[T]]) {
     def this(value: T) = this(value, List())
     override def toString: String = value.toString + children.map(_.toString).mkString + "^"
+
+    // P70C: count the nodes of a multiway tree.
+    def nodeCount: Int = 1 + children.map(_.nodeCount).sum
   }
 
   object MTree {
@@ -36,5 +39,11 @@ package multiwaytree {
     // afg^^c^bd^e^^^
     println(MTree.string2MTree("afg^^c^bd^e^^^").toString)
     // afg^^c^bd^e^^^
+
+    // P70C
+    println(MTree('a', List(MTree('f'))).nodeCount)
+    // 2
+    println(tree.nodeCount)
+    // 7
   }
 }
