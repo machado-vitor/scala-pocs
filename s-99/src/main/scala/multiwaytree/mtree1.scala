@@ -1,7 +1,6 @@
 package multiwaytree {
 
-  case class MTree[+T](value: T, children: List[MTree[T]]) {
-    def this(value: T) = this(value, List())
+  case class MTree[+T](value: T, children: List[MTree[T]] = List()) {
     override def toString: String = value.toString + children.map(_.toString).mkString + "^"
 
     // P70C: count the nodes of a multiway tree.
