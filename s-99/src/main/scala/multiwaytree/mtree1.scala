@@ -10,7 +10,9 @@ package multiwaytree {
     def internalPathLength: Int = {
       def ipl(tree: MTree[T], depth: Int): Int =
         depth + tree.children.map(ipl(_, depth + 1)).sum
-      ipl(this, 0)
+      ipl(this, 0) // this = the enclosing MTree instance.
+      // when the compiler sees this, it walks through the syntactic nesting until it find a class/object/trait.
+      // The first one it hits is what `this` means. Local defs, vals, blocks and lambdas don't count.
     }
   }
 
