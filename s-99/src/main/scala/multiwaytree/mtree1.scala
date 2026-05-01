@@ -14,6 +14,10 @@ case class MTree[+T](value: T, children: List[MTree[T]] = List()) {
     // when the compiler sees this, it walks through the syntactic nesting until it find a class/object/trait.
     // The first one it hits is what `this` means. Local defs, vals, blocks and lambdas don't count.
   }
+
+  // P72: postorder sequence of the nodes 
+  // children left-to-right, then this node.
+  def postorder: List[T] = children.flatMap(_.postorder) :+ value
 }
 
 object MTree {
@@ -58,4 +62,8 @@ object MTree1 extends App {
   // P71
   println("afg^^c^bd^e^^^".toMTree.internalPathLength)
   // 9
+
+  // P72
+  println("afg^^c^bd^e^^^".toMTree.postorder)
+  // List(g, f, c, d, e, b, a)
 }
