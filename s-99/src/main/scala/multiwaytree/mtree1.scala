@@ -25,7 +25,7 @@ object MTree {
     def parse(pos: Int): (MTree[Char], Int) = {
       val value = s(pos)
       var i = pos + 1
-      val children = List.newBuilder[MTree[Char]]
+      val children = List.newBuilder[MTree[Char]] // O(1) appends; .result() yields the immutable List
       while (s(i) != '^') {
         val (child, next) = parse(i)
         children += child
