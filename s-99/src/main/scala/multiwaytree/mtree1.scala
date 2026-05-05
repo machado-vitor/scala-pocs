@@ -15,9 +15,13 @@ case class MTree[+T](value: T, children: List[MTree[T]] = List()) {
     // The first one it hits is what `this` means. Local defs, vals, blocks and lambdas don't count.
   }
 
-  // P72: postorder sequence of the nodes 
+  // P72: postorder sequence of the nodes
   // children left-to-right, then this node.
   def postorder: List[T] = children.flatMap(_.postorder) :+ value
+
+  def lispyTree: String =
+    if (children.isEmpty) value.toString
+    else children.map(_.lispyTree).mkString(s"($value ", " ", ")")
 }
 
 object MTree {
