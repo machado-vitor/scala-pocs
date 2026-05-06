@@ -43,10 +43,30 @@ object MTree {
     }
     parse(0)._1
   }
+
+  // P73 (reverse): parse a Lisp-like string into an MTree[String].
+  def fromLispyString(s: String): MTree[String] = {
+    val tokens = s.replace("(", " ( ").replace(")", " ) ").split("\\s+").filter(_.nonEmpty)
+    var i = 0
+    def parse(): MTree[String] =
+      if (tokens(i) == "(") {
+        i += 1                                    // skip '('
+        val v = tokens(i); i += 1                 // first atom is the value
+        val children = List.newBuilder[MTree[String]]
+        while (tokens(i) != ")") children += parse()
+        i += 1                                    // skip ')'
+        MTree(v, children.result())
+      } else {
+        val v = tokens(i); i += 1
+        MTree(v)                                  // bare atom => leaf
+      }
+    parse()
+  }
 }
 
 extension (s: String)
   def toMTree: MTree[Char] = MTree.fromString(s)
+  def fromLispy: MTree[String] = MTree.fromLispyString(s)
 
 object MTree1 extends App {
   val tree = MTree('a', List(MTree('f', List(MTree('g'))), MTree('c'), MTree('b', List(MTree('d'), MTree('e')))))
@@ -70,4 +90,14 @@ object MTree1 extends App {
   // P72
   println("afg^^c^bd^e^^^".toMTree.postorder)
   // List(g, f, c, d, e, b, a)
+
+  // P73
+  println(MTree("a", List(MTree("b", List(MTree("c"))))).lispyTree)
+  // (a (b c))
+  println(tree.lispyTree)
+  // (a (f g) c (b d e))
+  println("(a (f g) c (b d e))".fromLispy.lispyTree)
+  // (a (f g) c (b d e))
+  println("a".fromLispy.lispyTree)
+  // a
 }
