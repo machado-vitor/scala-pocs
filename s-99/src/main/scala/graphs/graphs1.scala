@@ -1,29 +1,32 @@
 package graphs
 
-// Graphs P80.
-// GraphBase holds the shared structure; Graph (undirected) and Digraph (directed)
-// only differ in how edgeTarget resolves "the other end" of an edge, and in how
-// adjacency is recorded when an edge is added.
 abstract class GraphBase[T, U] {
   case class Edge(n1: Node, n2: Node, value: U) {
-    def toTuple: (T, T, U) = (n1.value, n2.value, value)
+    def toTuple = (n1.value, n2.value, value)
   }
-
   case class Node(value: T) {
     var adj: List[Edge] = Nil
+    // neighbors are all nodes adjacent to this node.
     def neighbors: List[Node] = adj.map(edgeTarget(_, this).get)
-    override def toString: String = value.toString
   }
 
   var nodes: Map[T, Node] = Map()
   var edges: List[Edge] = Nil
 
-  // For undirected graphs the edge is symmetric; for digraphs only n1 -> n2.
+  // If the edge E connects N to another node, returns the other node,
+  // otherwise returns None.
   def edgeTarget(e: Edge, n: Node): Option[Node]
 
+  override def equals(o: Any): Boolean = o match {
+    case g: GraphBase[?, ?] =>
+      nodes.keys.toList.diff(g.nodes.keys.toList).isEmpty &&
+      edges.map(_.toTuple).diff(g.edges.map(_.toTuple)).isEmpty
+    case _ => false
+  }
+
   def addNode(value: T): Node = {
-    val n = Node(value)
-    nodes = nodes + (value -> n)
+    val n = new Node(value)
+    nodes = Map(value -> n) ++ nodes
     n
   }
 
@@ -38,59 +41,86 @@ abstract class GraphBase[T, U] {
     }
 }
 
-// Undirected graph: an edge connects both ends symmetrically.
 class Graph[T, U] extends GraphBase[T, U] {
-  override def edgeTarget(e: Edge, n: Node): Option[Node] =
+  override def equals(o: Any): Boolean = o match {
+    case g: Graph[?, ?] => super.equals(g)
+    case _ => false
+  }
+
+  def edgeTarget(e: Edge, n: Node): Option[Node] =
     if (e.n1 == n) Some(e.n2)
     else if (e.n2 == n) Some(e.n1)
     else None
 
   def addEdge(n1: T, n2: T, value: U): Unit = {
-    val e = Edge(nodes(n1), nodes(n2), value)
-    edges = edges :+ e
-    nodes(n1).adj = nodes(n1).adj :+ e
-    if (n1 != n2) nodes(n2).adj = nodes(n2).adj :+ e
+    val e = new Edge(nodes(n1), nodes(n2), value)
+    edges = e :: edges
+    nodes(n1).adj = e :: nodes(n1).adj
+    nodes(n2).adj = e :: nodes(n2).adj
   }
 
   override def toString: String = Graph.renderString(this, '-')
 }
 
 class Digraph[T, U] extends GraphBase[T, U] {
-  override def edgeTarget(e: Edge, n: Node): Option[Node] =
-    if (e.n1 == n) Some(e.n2) else None
+  override def equals(o: Any): Boolean = o match {
+    case g: Digraph[?, ?] => super.equals(g)
+    case _ => false
+  }
+
+  def edgeTarget(e: Edge, n: Node): Option[Node] =
+    if (e.n1 == n) Some(e.n2)
+    else None
 
   def addArc(source: T, dest: T, value: U): Unit = {
-    val e = Edge(nodes(source), nodes(dest), value)
-    edges = edges :+ e
-    nodes(source).adj = nodes(source).adj :+ e
+    val e = new Edge(nodes(source), nodes(dest), value)
+    edges = e :: edges
+    nodes(source).adj = e :: nodes(source).adj
   }
 
   override def toString: String = Graph.renderString(this, '>')
 }
 
-object Graph {
-  // Build helpers. Unlabeled variants use Unit; labeled keep U.
-  def term[T](nodes: List[T], edges: List[(T, T)]): Graph[T, Unit] =
-    termLabel(nodes, edges.map { case (a, b) => (a, b, ()) })
+abstract class GraphObjBase {
+  type GraphClass[T, U]
+
+  def addLabel[T](edges: List[(T, T)]): List[(T, T, Unit)] =
+    edges.map(v => (v._1, v._2, ()))
+  def term[T](nodes: List[T], edges: List[(T, T)]): GraphClass[T, Unit] =
+    termLabel(nodes, addLabel(edges))
+  def termLabel[T, U](nodes: List[T], edges: List[(T, T, U)]): GraphClass[T, U]
+
+  def addAdjacentLabel[T](nodes: List[(T, List[T])]): List[(T, List[(T, Unit)])] =
+    nodes.map(a => (a._1, a._2.map((_, ()))))
+  def adjacent[T](nodes: List[(T, List[T])]): GraphClass[T, Unit] =
+    adjacentLabel(addAdjacentLabel(nodes))
+  def adjacentLabel[T, U](nodes: List[(T, List[(T, U)])]): GraphClass[T, U]
+}
+
+object Graph extends GraphObjBase {
+  type GraphClass[T, U] = Graph[T, U]
 
   def termLabel[T, U](nodes: List[T], edges: List[(T, T, U)]): Graph[T, U] = {
     val g = new Graph[T, U]
-    nodes.foreach(g.addNode)
-    edges.foreach { case (a, b, v) =>
-      if (!g.nodes.contains(a)) g.addNode(a)
-      if (!g.nodes.contains(b)) g.addNode(b)
-      g.addEdge(a, b, v)
-    }
+    nodes.map(g.addNode)
+    edges.map(v => g.addEdge(v._1, v._2, v._3))
+    g
+  }
+  def adjacentLabel[T, U](nodes: List[(T, List[(T, U)])]): Graph[T, U] = {
+    val g = new Graph[T, U]
+    for ((v, _) <- nodes) g.addNode(v)
+    for ((n1, a) <- nodes; (n2, l) <- a)
+      if (!g.nodes(n1).neighbors.contains(g.nodes(n2)))
+        g.addEdge(n1, n2, l)
     g
   }
 
-  // P80: parse the human-friendly notation, unlabeled.
+  // P80: parse the human-friendly notation.
   def fromString(s: String): Graph[String, Unit] = {
     val (ns, es) = parse(s, '-')
-    termLabel(ns, es.map { case (a, b, _) => (a, b, ()) })
+    term(ns, es.map { case (a, b, _) => (a, b) })
   }
 
-  // P80: parse the human-friendly notation with integer labels (e.g. "a-b/3").
   def fromStringLabel(s: String): Graph[String, Int] = {
     val (ns, es) = parse(s, '-')
     termLabel(ns, es.map { case (a, b, l) => (a, b, l.toInt) })
@@ -109,7 +139,7 @@ object Graph {
         val left = tok.substring(0, idx)
         val rest = tok.substring(idx + 1)
         val (right, label) = rest.split('/') match {
-          case Array(r) => (r, "1")  // default label when none given
+          case Array(r) => (r, "1") // default label when none given
           case Array(r, l) => (r, l)
         }
         ns += left
@@ -136,24 +166,25 @@ object Graph {
   }
 }
 
-object Digraph {
-  def term[T](nodes: List[T], arcs: List[(T, T)]): Digraph[T, Unit] =
-    termLabel(nodes, arcs.map { case (a, b) => (a, b, ()) })
+object Digraph extends GraphObjBase {
+  type GraphClass[T, U] = Digraph[T, U]
 
-  def termLabel[T, U](nodes: List[T], arcs: List[(T, T, U)]): Digraph[T, U] = {
+  def termLabel[T, U](nodes: List[T], edges: List[(T, T, U)]): Digraph[T, U] = {
     val g = new Digraph[T, U]
-    nodes.foreach(g.addNode)
-    arcs.foreach { case (a, b, v) =>
-      if (!g.nodes.contains(a)) g.addNode(a)
-      if (!g.nodes.contains(b)) g.addNode(b)
-      g.addArc(a, b, v)
-    }
+    nodes.map(g.addNode)
+    edges.map(v => g.addArc(v._1, v._2, v._3))
+    g
+  }
+  def adjacentLabel[T, U](nodes: List[(T, List[(T, U)])]): Digraph[T, U] = {
+    val g = new Digraph[T, U]
+    for ((n, _) <- nodes) g.addNode(n)
+    for ((s, a) <- nodes; (d, l) <- a) g.addArc(s, d, l)
     g
   }
 
   def fromString(s: String): Digraph[String, Unit] = {
     val (ns, es) = Graph.parse(s, '>')
-    termLabel(ns, es.map { case (a, b, _) => (a, b, ()) })
+    term(ns, es.map { case (a, b, _) => (a, b) })
   }
 
   def fromStringLabel(s: String): Digraph[String, Int] = {
@@ -166,10 +197,10 @@ object Graphs1 extends App {
   // P80: conversions and human-friendly form.
   val g = Graph.fromString("[b-c, f-c, g-h, d, f-b, k-f, h-g]")
   println(g.toTermForm)
-  // (List(f, b, g, k, d, c, h),List((b,c,()), (f,c,()), (g,h,()), (f,b,()), (k,f,()), (h,g,())))
-  // Node order follows the underlying Map iteration; edges keep insertion order.
+  // (List(f, b, g, k, d, c, h),List((h,g,()), (k,f,()), (f,b,()), (g,h,()), (f,c,()), (b,c,())))
+  // Node order is HashMap iteration order; edges are reverse-insertion (`::`).
   println(g)
-  // [b-c, f-c, g-h, f-b, k-f, h-g, d]
+  // [h-g, k-f, f-b, g-h, f-c, b-c, d]
   println(Digraph.fromStringLabel("[p>q/9, m>q/7, k, p>m/5]").toAdjacentForm)
-  // List((p,List((q,9), (m,5))), (q,List()), (m,List((q,7))), (k,List()))
+  // List((k,List()), (m,List((q,7))), (q,List()), (p,List((m,5), (q,9))))
 }
