@@ -39,6 +39,19 @@ abstract class GraphBase[T, U] {
     nodes.values.toList.map { n =>
       (n.value, n.adj.map(e => (edgeTarget(e, n).get.value, e.value)))
     }
+
+  // P81: all acyclic paths from `from` to `to`. Direction (or lack of it) is
+  // already encoded in `neighbors` via `edgeTarget`, so the same DFS works for
+  // both Graph and Digraph.
+  def findPaths(from: T, to: T): List[List[T]] = {
+    def step(curr: Node, visited: Set[T]): List[List[T]] =
+      if (curr.value == to) List(List(to))
+      else
+        curr.neighbors
+          .filterNot(n => visited.contains(n.value))
+          .flatMap(n => step(n, visited + n.value).map(curr.value :: _))
+    step(nodes(from), Set(from))
+  }
 }
 
 class Graph[T, U] extends GraphBase[T, U] {
@@ -203,4 +216,11 @@ object Graphs1 extends App {
   // [h-g, k-f, f-b, g-h, f-c, b-c, d]
   println(Digraph.fromStringLabel("[p>q/9, m>q/7, k, p>m/5]").toAdjacentForm)
   // List((k,List()), (m,List((q,7))), (q,List()), (p,List((m,5), (q,9))))
+
+  // P81: acyclic paths between two nodes.
+  val dg = Digraph.fromStringLabel("[p>q/9, m>q/7, k, p>m/5]")
+  println(dg.findPaths("p", "q"))
+  // List(List(p, q), List(p, m, q))
+  println(dg.findPaths("p", "k"))
+  // List()
 }
