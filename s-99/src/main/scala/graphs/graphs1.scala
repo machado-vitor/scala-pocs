@@ -25,7 +25,7 @@ abstract class GraphBase[T, U] {
   }
 
   def addNode(value: T): Node = {
-    val n = new Node(value)
+    val n = Node(value)
     nodes = Map(value -> n) ++ nodes
     n
   }
