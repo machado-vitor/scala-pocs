@@ -52,6 +52,14 @@ abstract class GraphBase[T, U] {
           .flatMap(n => step(n, visited + n.value).map(curr.value :: _))
     step(nodes(from), Set(from))
   }
+
+  // P82: cycles starting (and ending) at `source`. Drop length-3 results so
+  // an undirected edge isn't reused as source→n→source.
+  def findCycles(source: T): List[List[T]] =
+    nodes(source).neighbors
+      .flatMap(n => findPaths(n.value, source))
+      .map(source :: _)
+      .filter(_.lengthCompare(3) > 0)
 }
 
 class Graph[T, U] extends GraphBase[T, U] {
@@ -223,4 +231,8 @@ object Graphs1 extends App {
   // List(List(p, q), List(p, m, q))
   println(dg.findPaths("p", "k"))
   // List()
+
+  // P82: cycles through a given node.
+  println(Graph.fromString("[b-c, f-c, g-h, d, f-b, k-f, h-g]").findCycles("f"))
+  // List(List(f, c, b, f), List(f, b, c, f))
 }
