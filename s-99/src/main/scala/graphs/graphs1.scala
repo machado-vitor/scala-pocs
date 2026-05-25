@@ -2,7 +2,7 @@ package graphs
 
 abstract class GraphBase[T, U] {
   case class Edge(n1: Node, n2: Node, value: U) {
-    def toTuple = (n1.value, n2.value, value)
+    def toTuple: (T, T, U) = (n1.value, n2.value, value)
   }
   case class Node(value: T) {
     var adj: List[Edge] = Nil
@@ -74,7 +74,7 @@ class Graph[T, U] extends GraphBase[T, U] {
     else None
 
   def addEdge(n1: T, n2: T, value: U): Unit = {
-    val e = new Edge(nodes(n1), nodes(n2), value)
+    val e = Edge(nodes(n1), nodes(n2), value)
     edges = e :: edges
     nodes(n1).adj = e :: nodes(n1).adj
     nodes(n2).adj = e :: nodes(n2).adj
@@ -94,7 +94,7 @@ class Digraph[T, U] extends GraphBase[T, U] {
     else None
 
   def addArc(source: T, dest: T, value: U): Unit = {
-    val e = new Edge(nodes(source), nodes(dest), value)
+    val e = Edge(nodes(source), nodes(dest), value)
     edges = e :: edges
     nodes(source).adj = e :: nodes(source).adj
   }
@@ -124,7 +124,7 @@ object Graph extends GraphObjBase {
   def termLabel[T, U](nodes: List[T], edges: List[(T, T, U)]): Graph[T, U] = {
     val g = new Graph[T, U]
     nodes.map(g.addNode)
-    edges.map(v => g.addEdge(v._1, v._2, v._3))
+    edges.foreach(v => g.addEdge(v._1, v._2, v._3))
     g
   }
   def adjacentLabel[T, U](nodes: List[(T, List[(T, U)])]): Graph[T, U] = {
