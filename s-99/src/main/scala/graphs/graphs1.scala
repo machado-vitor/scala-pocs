@@ -96,6 +96,26 @@ class Graph[T, U] extends GraphBase[T, U] {
   // P83: a graph is a tree iff it has exactly one spanning tree (itself).
   def isTree: Boolean = spanningTrees.lengthCompare(1) == 0
 
+  // P84: Prim's algorithm — repeatedly pull the cheapest edge crossing from the
+  // tree to a node not yet in it.
+  def minimalSpanningTree(using ord: Ordering[U]): Graph[T, U] = {
+    val nodeList = nodes.keys.toList
+    if (nodes.isEmpty) new Graph[T, U]
+    else {
+      @scala.annotation.tailrec
+      def grow(in: Set[Node], picked: List[Edge]): List[Edge] = {
+        val crossing = edges.filter(e => in.contains(e.n1) != in.contains(e.n2))
+        if (crossing.isEmpty) picked
+        else {
+          val cheap = crossing.minBy(_.value)
+          val next = if (in.contains(cheap.n1)) cheap.n2 else cheap.n1
+          grow(in + next, cheap :: picked)
+        }
+      }
+      Graph.termLabel(nodeList, grow(Set(nodes.values.head), Nil).map(_.toTuple))
+    }
+  }
+
   // P83: BFS from any node and check every node was reached.
   def isConnected: Boolean =
     if (nodes.isEmpty) true
