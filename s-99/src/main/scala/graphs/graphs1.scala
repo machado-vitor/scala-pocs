@@ -80,6 +80,37 @@ class Graph[T, U] extends GraphBase[T, U] {
     nodes(n2).adj = e :: nodes(n2).adj
   }
 
+  // P83: every (n-1)-edge subset that keeps the graph connected is a spanning
+  // tree — connected + (n-1) edges forces acyclic.
+  def spanningTrees: List[Graph[T, U]] = {
+    val nodeList = nodes.keys.toList
+    val n = nodeList.size
+    if (n == 0) List(new Graph[T, U])
+    else
+      edges.map(_.toTuple).combinations(n - 1).toList.flatMap { es =>
+        val candidate = Graph.termLabel(nodeList, es)
+        if (candidate.isConnected) Some(candidate) else None
+      }
+  }
+
+  // P83: a graph is a tree iff it has exactly one spanning tree (itself).
+  def isTree: Boolean = spanningTrees.lengthCompare(1) == 0
+
+  // P83: BFS from any node and check every node was reached.
+  def isConnected: Boolean =
+    if (nodes.isEmpty) true
+    else {
+      @scala.annotation.tailrec
+      def grow(visited: Set[Node], frontier: List[Node]): Set[Node] = frontier match {
+        case Nil => visited
+        case n :: rest =>
+          val fresh = n.neighbors.filterNot(visited.contains)
+          grow(visited ++ fresh, rest ++ fresh)
+      }
+      val start = nodes.values.head
+      grow(Set(start), List(start)).size == nodes.size
+    }
+
   override def toString: String = Graph.renderString(this, '-')
 }
 
@@ -235,4 +266,19 @@ object Graphs1 extends App {
   // P82: cycles through a given node.
   println(Graph.fromString("[b-c, f-c, g-h, d, f-b, k-f, h-g]").findCycles("f"))
   // List(List(f, c, b, f), List(f, b, c, f))
+
+  // P83: spanning trees, isTree, isConnected.
+  println(Graph.fromString("[a-b, b-c, a-c]").spanningTrees)
+  // 3 spanning trees of the triangle
+  val bigG = Graph.term(
+    List('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+    List(('a', 'b'), ('a', 'd'), ('b', 'c'), ('b', 'e'),
+         ('c', 'e'), ('d', 'e'), ('d', 'f'), ('d', 'g'),
+         ('e', 'h'), ('f', 'g'), ('g', 'h')))
+  println(bigG.spanningTrees.length)
+  // 112
+  println(Graph.fromString("[a-b, b-c]").isTree)              // true
+  println(Graph.fromString("[a-b, b-c, a-c]").isTree)         // false
+  println(Graph.fromString("[a-b, b-c, a-c]").isConnected)    // true
+  println(Graph.fromString("[a-b, b-c, d-e]").isConnected)    // false
 }
