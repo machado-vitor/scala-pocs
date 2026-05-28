@@ -301,4 +301,15 @@ object Graphs1 extends App {
   println(Graph.fromString("[a-b, b-c, a-c]").isTree)         // false
   println(Graph.fromString("[a-b, b-c, a-c]").isConnected)    // true
   println(Graph.fromString("[a-b, b-c, d-e]").isConnected)    // false
+
+  // P84: minimum spanning tree (Prim's).
+  println(Graph.fromStringLabel("[a-b/1, b-c/2, a-c/3]").minimalSpanningTree)
+  // [b-c/2, a-b/1] (total weight 3)
+  val labeled = Graph.termLabel(
+    List('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'),
+    List(('a', 'b', 5), ('a', 'd', 3), ('b', 'c', 2), ('b', 'e', 4),
+         ('c', 'e', 6), ('d', 'e', 7), ('d', 'f', 4), ('d', 'g', 3),
+         ('e', 'h', 5), ('f', 'g', 4), ('g', 'h', 1)))
+  println(labeled.minimalSpanningTree)
+  // an MST with total weight 22
 }
