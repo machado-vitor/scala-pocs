@@ -60,6 +60,17 @@ abstract class GraphBase[T, U] {
       .flatMap(n => findPaths(n.value, source))
       .map(source :: _)
       .filter(_.lengthCompare(3) > 0)
+
+  // P85: brute-force isomorphism — try every bijection and check that the
+  // neighbor set of each node maps to the neighbor set of its image.
+  def isIsomorphicTo[V, W](g: GraphBase[V, W]): Boolean =
+    nodes.size == g.nodes.size && edges.size == g.edges.size && {
+      val ns1 = nodes.values.toList
+      g.nodes.values.toList.permutations.exists { perm =>
+        val f = ns1.zip(perm).toMap
+        ns1.forall(n => n.neighbors.map(f).toSet == f(n).neighbors.toSet)
+      }
+    }
 }
 
 class Graph[T, U] extends GraphBase[T, U] {
@@ -312,4 +323,12 @@ object Graphs1 extends App {
          ('e', 'h', 5), ('f', 'g', 4), ('g', 'h', 1)))
   println(labeled.minimalSpanningTree)
   // an MST with total weight 22
+
+  // P85: isomorphism.
+  println(Graph.fromString("[a-b]").isIsomorphicTo(Graph.fromString("[5-7]")))
+  // true
+  println(Graph.fromString("[a-b, c-d]").isIsomorphicTo(Graph.fromString("[1-2, 3-4]")))
+  // true — two disconnected edges either way
+  println(Graph.fromString("[a-b, b-c, c-d]").isIsomorphicTo(Graph.fromString("[a-b, a-c, a-d]")))
+  // false — path vs star, same |N| and |E| but different degree sequences
 }
